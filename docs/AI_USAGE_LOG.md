@@ -438,6 +438,19 @@
   * `src/hooks/useAppState.ts`
 * **Implementation Notes:** Guarantees 100% active, dynamic live topic updates on Vercel deployments.
 
+---
+
+## Entry 36: 100% Blank Session Reset & Hard Storage Flush Implementation
+
+* **Date:** 2026-08-08
+* **Goal:** Ensure session reset purges all lingering state so the platform starts 100% blank at 0 posts, 0 queue items, and 0 memory records.
+* **Prompt Summary:** Remove initial auto-scan on empty state in `useAppState.ts` and enforce hard location origin reloads in `resetAll()`.
+* **AI Output Summary:** Updated `useAppState.ts` to purge all local/session storage and start with an unpopulated clean canvas upon session reset.
+* **Files Modified:**
+  * `src/hooks/useAppState.ts`
+* **Implementation Notes:** Resetting now starts at a 100% blank slate, populating fresh intelligence only when the countdown timer or manual trigger fires.
+
+
 
 
 

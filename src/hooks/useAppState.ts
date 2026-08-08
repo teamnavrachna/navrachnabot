@@ -54,17 +54,6 @@ export function useAppState() {
     };
   }, []);
 
-  // Autonomous scan on initial load if empty
-  useEffect(() => {
-    if (!state.persona) return;
-    if (state.scans.length === 0 && !scanLock.current) {
-      scanLock.current = true;
-      const { newState } = runScan(state);
-      setState(newState);
-      scanLock.current = false;
-    }
-  }, [state.persona]);
-
   // Dynamic autonomous countdown timer loop based on user configuration
   useEffect(() => {
     const timer = setInterval(() => {
@@ -171,16 +160,24 @@ export function useAppState() {
   }, [state]);
 
   const createPersona = useCallback((persona: Persona) => {
-    localStorage.removeItem('navarachna_agent_id');
-    setState((s) => ({ ...s, persona, posts: [], scans: [], nextScanAt: Date.now() + 6000 }));
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+    } catch { /* ignore */ }
+    const fresh: AppState = {
+      ...initialState(),
+      persona,
+      posts: [],
+      scans: [],
+      nextScanAt: Date.now() + 30000,
+    };
+    setState(fresh);
+    save(fresh);
   }, []);
 
   const updatePersona = useCallback((persona: Persona) => {
-    if (state.persona && state.persona.domain !== persona.domain) {
-      localStorage.removeItem('navarachna_agent_id');
-    }
-    setState((s) => ({ ...s, persona, posts: [] }));
-  }, [state.persona]);
+    setState((s) => ({ ...s, persona, posts: [], scans: [] }));
+  }, []);
 
   const giveFeedback = useCallback((postId: string, feedback: 'liked' | 'disliked' | 'more') => {
     setState((s) => applyFeedback(s, postId, feedback));
@@ -214,10 +211,12 @@ export function useAppState() {
   }, [state]);
 
   const resetAll = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem('navarachna_agent_id');
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+    } catch { /* ignore */ }
     setState(initialState());
-    window.location.reload();
+    window.location.href = window.location.origin + window.location.pathname;
   }, []);
 
   const maxSec = getScanIntervalSeconds();
