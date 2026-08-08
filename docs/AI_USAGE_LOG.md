@@ -214,6 +214,19 @@
   * `src/components/PersonaSettings.tsx`
 * **Implementation Notes:** All setting options now feature clear active badges, hover scale effects, and distinct selection borders.
 
+---
+
+## Entry 18: Activity Stream Timeline Endpoint & Real-Time Log Stream Fix
+
+* **Date:** 2026-08-08
+* **Goal:** Fix real-time stdout log stream on Autonomous Activity Stream page by connecting to backend `/api/agent/timeline`.
+* **Prompt Summary:** Resolve empty terminal view on stdout log stream page by fixing endpoint mapping and synthesizing live evaluation events.
+* **AI Output Summary:** Rewrote `ActivityStreamPage.tsx` to fetch `/api/agent/timeline` with 3-second continuous polling and dynamic interval badge.
+* **Files Modified:**
+  * `src/components/ActivityStreamPage.tsx`
+* **Implementation Notes:** Terminal logs now continuously render discovery, approval, rejection, and broadcast events in real-time.
+
+
 
 
 
