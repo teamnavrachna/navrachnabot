@@ -1,8 +1,49 @@
 import { useState } from 'react';
-import { ThumbsUp, ThumbsDown, Sparkles, ExternalLink, TrendingUp, Rocket, Lightbulb, RefreshCw, Bookmark, FileText } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Sparkles, ExternalLink, TrendingUp, Rocket, Lightbulb, RefreshCw, Bookmark, FileText, Shield } from 'lucide-react';
 import type { Post } from '../types';
 import type { AppController } from '../hooks/useAppState';
 import { timeAgo } from '../lib/format';
+
+function formatExecutiveBody(text: string) {
+  if (!text) return null;
+
+  const keywords = ['EXECUTIVE SUMMARY', 'COMMENTS', 'WHY IT MATTERS', 'KEY TAKEAWAY'];
+  const regex = new RegExp(`(${keywords.join('|')})`, 'i');
+  const parts = text.split(regex);
+
+  if (parts.length <= 1) {
+    return <p className="t-body c-primary" style={{ fontSize: 16, lineHeight: 1.7, marginBottom: 28 }}>{text}</p>;
+  }
+
+  const sections: { title: string; content: string }[] = [];
+  let currentTitle = 'EXECUTIVE SUMMARY';
+
+  for (let i = 0; i < parts.length; i++) {
+    const p = parts[i].trim();
+    if (!p) continue;
+    const match = keywords.find((k) => k.toLowerCase() === p.toLowerCase());
+    if (match) {
+      currentTitle = match;
+    } else {
+      sections.push({ title: currentTitle, content: p.replace(/^:\s*/, '') });
+    }
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 28 }}>
+      {sections.map((sec, idx) => (
+        <div key={idx} style={{ background: 'var(--bg-inset)', padding: '16px 20px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div style={{ fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
+            {sec.title}
+          </div>
+          <p className="t-body c-primary" style={{ fontSize: 15, lineHeight: 1.65 }}>
+            {sec.content}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function Feed({ ctrl }: { ctrl: AppController }) {
   const { state, now, giveFeedback, toggleBookmark } = ctrl;
@@ -53,10 +94,10 @@ export function Feed({ ctrl }: { ctrl: AppController }) {
   const activePost = state.posts[0];
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 32 }} className="fade-in">
+    <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 32 }} className="animate-fade-in">
       
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }} className="animate-slide-up">
         <div>
           <h1 className="t-h1 c-primary">Published Intelligence Feed</h1>
           <p className="t-body c-secondary" style={{ marginTop: 6 }}>
@@ -68,7 +109,7 @@ export function Feed({ ctrl }: { ctrl: AppController }) {
           onClick={fetchNextQueuedNews}
           disabled={loadingNext}
           className="btn btn-primary"
-          style={{ padding: '9px 16px', fontSize: 13 }}
+          style={{ padding: '9px 18px', fontSize: 13, borderRadius: 10 }}
         >
           <RefreshCw size={14} className={loadingNext ? 'animate-spin' : ''} />
           {loadingNext ? 'Publishing Next...' : 'Advance Feed Queue'}
@@ -77,17 +118,17 @@ export function Feed({ ctrl }: { ctrl: AppController }) {
 
       {/* Main Card */}
       {!activePost ? (
-        <div className="card" style={{ padding: 48, textAlign: 'center' }}>
+        <div className="card animate-slide-up" style={{ padding: 48, textAlign: 'center' }}>
           <FileText size={32} className="c-muted" style={{ margin: '0 auto 12px' }} />
           <p className="t-body c-tertiary mono">No publications in feed yet. Continuous discovery engine running...</p>
         </div>
       ) : (
-        <article className="card" style={{ padding: 32, background: 'var(--bg-surface)', borderColor: 'var(--border-medium)' }}>
+        <article className="card animate-slide-up" style={{ padding: 32, background: 'var(--bg-surface)', borderColor: 'var(--border-medium)', borderRadius: 18 }}>
           {/* Metadata Bar */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 16, marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <Sparkles size={16} className="c-accent" />
-              <span className="t-label c-accent">PRIMARY PUBLISHED REPORT</span>
+              <span className="t-label c-accent" style={{ letterSpacing: '0.05em' }}>PRIMARY PUBLISHED REPORT</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <span className="t-caption">{timeAgo(activePost.publishedAt, now)}</span>
@@ -97,61 +138,68 @@ export function Feed({ ctrl }: { ctrl: AppController }) {
           </div>
 
           {/* Title */}
-          <h1 className="t-h1 c-primary" style={{ fontSize: 30, lineHeight: 1.25, marginBottom: 20 }}>
+          <h1 className="t-h1 c-primary" style={{ fontSize: 28, lineHeight: 1.3, marginBottom: 24 }}>
             {activePost.title}
           </h1>
 
-          {/* Executive Summary Body */}
-          <p className="t-body c-primary" style={{ fontSize: 16, lineHeight: 1.7, marginBottom: 32 }}>
-            {activePost.whatHappened}
-          </p>
+          {/* Formatted Executive Summary Body */}
+          {formatExecutiveBody(activePost.whatHappened)}
 
           {/* 3-Column Analysis Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20, marginBottom: 32 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16, marginBottom: 28 }}>
             <div style={{ background: 'var(--bg-inset)', padding: 20, borderRadius: 12, border: '1px solid var(--border-subtle)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                <TrendingUp size={15} className="c-highlight" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                <TrendingUp size={16} className="c-highlight" />
                 <span className="t-label c-highlight">Strategic Value</span>
               </div>
               <p className="t-body c-secondary" style={{ fontSize: 14, lineHeight: 1.6 }}>{activePost.whyItMatters}</p>
             </div>
 
             <div style={{ background: 'var(--bg-inset)', padding: 20, borderRadius: 12, border: '1px solid var(--border-subtle)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                <Rocket size={15} className="c-success" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                <Rocket size={16} className="c-success" />
                 <span className="t-label c-success">Trajectory &amp; Impact</span>
               </div>
               <p className="t-body c-secondary" style={{ fontSize: 14, lineHeight: 1.6 }}>{activePost.whatCouldHappenNext}</p>
             </div>
 
             <div style={{ background: 'var(--bg-inset)', padding: 20, borderRadius: 12, border: '1px solid var(--border-subtle)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                <Lightbulb size={15} className="c-warning" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                <Lightbulb size={16} className="c-warning" />
                 <span className="t-label c-warning">Autonomous Assessment</span>
               </div>
               <p className="t-body c-secondary" style={{ fontSize: 14, lineHeight: 1.6 }}>{activePost.aiInsight.replace('AI Insight: ', '')}</p>
             </div>
           </div>
 
-          {/* Editorial Rationale Box */}
-          <div style={{ background: 'var(--bg-card)', padding: 20, borderRadius: 12, border: '1px solid var(--border-subtle)', marginBottom: 28 }}>
-            <div className="t-label c-tertiary" style={{ marginBottom: 12 }}>System Editorial Audit</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
-              <div>
-                <div className="t-caption">Why Selected</div>
-                <div className="t-meta c-primary" style={{ marginTop: 2 }}>{activePost.rationale.whySelected}</div>
+          {/* Redesigned System Editorial Audit Box */}
+          <div style={{ background: 'var(--bg-inset)', padding: 24, borderRadius: 16, border: '1px solid rgba(255,255,255,0.08)', marginBottom: 28 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, paddingBottom: 12, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+              <Shield size={16} className="c-accent" />
+              <span className="t-label c-accent" style={{ letterSpacing: '0.06em', fontWeight: 700 }}>SYSTEM EDITORIAL AUDIT</span>
+            </div>
+
+            {/* Why Selected — Full Width Hero Block */}
+            <div style={{ background: 'var(--bg-card)', padding: 20, borderRadius: 12, borderLeft: '3.5px solid var(--accent)', border: '1px solid rgba(255,255,255,0.07)', marginBottom: 16 }}>
+              <div className="t-caption c-accent" style={{ fontWeight: 700, marginBottom: 8, letterSpacing: '0.05em' }}>WHY THIS TOPIC WAS SELECTED</div>
+              <div style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, fontFamily: 'var(--font-sans)' }}>
+                {activePost.rationale.whySelected}
               </div>
-              <div>
-                <div className="t-caption">Recency Context</div>
-                <div className="t-meta c-primary" style={{ marginTop: 2 }}>{activePost.rationale.whyRelevantNow}</div>
+            </div>
+
+            {/* 3-Column Metrics Row */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
+              <div style={{ background: 'var(--bg-card)', padding: '16px 18px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="t-caption c-tertiary" style={{ fontSize: 11, marginBottom: 4, fontWeight: 600 }}>RECENCY CONTEXT</div>
+                <div className="t-meta c-primary" style={{ fontWeight: 600, fontSize: 13 }}>{activePost.rationale.whyRelevantNow}</div>
               </div>
-              <div>
-                <div className="t-caption">Candidates Evaluated</div>
-                <div className="t-meta c-primary" style={{ marginTop: 2 }}>{activePost.rationale.candidatesConsidered} candidate topics</div>
+              <div style={{ background: 'var(--bg-card)', padding: '16px 18px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="t-caption c-tertiary" style={{ fontSize: 11, marginBottom: 4, fontWeight: 600 }}>CANDIDATES EVALUATED</div>
+                <div className="t-meta c-primary" style={{ fontWeight: 600, fontSize: 13 }}>{activePost.rationale.candidatesConsidered} candidate topics</div>
               </div>
-              <div>
-                <div className="t-caption">Filtered Candidates</div>
-                <div className="t-meta c-primary" style={{ marginTop: 2 }}>{activePost.rationale.rejectedCount} below threshold</div>
+              <div style={{ background: 'var(--bg-card)', padding: '16px 18px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="t-caption c-tertiary" style={{ fontSize: 11, marginBottom: 4, fontWeight: 600 }}>FILTERED CANDIDATES</div>
+                <div className="t-meta c-primary" style={{ fontWeight: 600, fontSize: 13 }}>{activePost.rationale.rejectedCount} below threshold</div>
               </div>
             </div>
           </div>
@@ -161,7 +209,7 @@ export function Feed({ ctrl }: { ctrl: AppController }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <span className="t-caption">Sources:</span>
               {activePost.sources.map((s, idx) => (
-                <a key={idx} href={s.url} target="_blank" rel="noopener noreferrer" className="btn btn-ghost" style={{ fontSize: 12, padding: '4px 8px' }}>
+                <a key={idx} href={s.url} target="_blank" rel="noopener noreferrer" className="btn btn-ghost" style={{ fontSize: 12, padding: '4px 10px', borderRadius: 8 }}>
                   {s.name} <ExternalLink size={11} />
                 </a>
               ))}
@@ -172,18 +220,21 @@ export function Feed({ ctrl }: { ctrl: AppController }) {
               <button
                 onClick={() => giveFeedback(activePost.id, 'liked')}
                 className={`btn ${activePost.feedback === 'liked' ? 'btn-primary' : ''}`}
+                style={{ borderRadius: 8 }}
               >
                 <ThumbsUp size={13} /> Relevant
               </button>
               <button
                 onClick={() => giveFeedback(activePost.id, 'disliked')}
                 className="btn"
+                style={{ borderRadius: 8 }}
               >
                 <ThumbsDown size={13} /> Not Relevant
               </button>
               <button
                 onClick={() => toggleBookmark(activePost.id)}
                 className={`btn ${state.bookmarks.includes(activePost.id) ? 'btn-primary' : ''}`}
+                style={{ borderRadius: 8 }}
               >
                 <Bookmark size={13} />
               </button>
