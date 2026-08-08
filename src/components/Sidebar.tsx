@@ -248,7 +248,11 @@ export function Sidebar({
           )}
 
           <button
-            onClick={onReset}
+            onClick={() => {
+              if (window.confirm('Are you sure you want to reset the agent session? Everything will be deleted and reset to the beginning.')) {
+                onReset();
+              }
+            }}
             title="Reset agent session"
             style={{
               width: 32,

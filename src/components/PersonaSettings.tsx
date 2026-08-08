@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, Save, Sparkles, Shield, Brain, Bot, FlaskConical, Scale, Sliders, Clock, CheckCircle2, User, Radio } from 'lucide-react';
+import { Check, Save, Sparkles, Shield, Brain, Bot, FlaskConical, Scale, Sliders, Clock, CheckCircle2, User, Radio, RotateCcw } from 'lucide-react';
 import type { Domain, WritingStyle } from '../types';
 import { DOMAINS, WRITING_STYLES } from '../data/presets';
 import type { AppController } from '../hooks/useAppState';
@@ -340,6 +340,39 @@ export function PersonaSettings({ ctrl }: { ctrl: AppController }) {
             ⚡ Domain updated — restarting session...
           </span>
         )}
+      </div>
+
+      {/* Danger Zone: Reset Agent Session */}
+      <div className="card animate-slide-up" style={{ padding: 28, border: '1px solid rgba(239, 68, 68, 0.30)', background: 'rgba(239, 68, 68, 0.04)', marginTop: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+          <div>
+            <h3 className="t-h3 text-danger" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 16 }}>
+              <RotateCcw size={18} /> Reset Agent Session
+            </h3>
+            <p className="t-body text-secondary" style={{ fontSize: 13, marginTop: 4, maxWidth: 550 }}>
+              Wipes all local state, candidate memory records, published feed briefings, and agent configuration. Returns immediately to Onboarding setup.
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              if (window.confirm('Are you sure you want to reset the agent session? Everything will be deleted and reset to the beginning.')) {
+                ctrl.resetAll();
+              }
+            }}
+            className="btn"
+            style={{
+              background: 'rgba(239, 68, 68, 0.15)',
+              color: '#EF4444',
+              borderColor: 'rgba(239, 68, 68, 0.35)',
+              padding: '10px 20px',
+              borderRadius: 10,
+              fontWeight: 600,
+              cursor: 'pointer'
+            }}
+          >
+            Reset Everything &amp; Start Over
+          </button>
+        </div>
       </div>
     </div>
   );

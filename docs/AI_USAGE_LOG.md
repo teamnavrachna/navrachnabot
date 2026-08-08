@@ -400,6 +400,21 @@
   * `src/hooks/useAppState.ts`
 * **Implementation Notes:** Enables 100% active autonomous simulation on static cloud hosts without needing backend connection.
 
+---
+
+## Entry 33: Complete Agent Session Reset & Onboarding Reset Implementation
+
+* **Date:** 2026-08-08
+* **Goal:** Ensure resetting agent session completely purges all local state, candidate memory, and saved configuration, returning immediately to Onboarding setup.
+* **Prompt Summary:** Update `resetAll()` to execute `localStorage.clear()` and `sessionStorage.clear()`, and add a Reset Session card in `PersonaSettings.tsx`.
+* **AI Output Summary:** Added full local/session storage purge in `useAppState.ts`, reset confirmation alerts, and a Danger Zone card in `PersonaSettings.tsx`.
+* **Files Modified:**
+  * `src/hooks/useAppState.ts`
+  * `src/components/Sidebar.tsx`
+  * `src/components/PersonaSettings.tsx`
+* **Implementation Notes:** Resetting immediately purges all state and returns to the initial Onboarding persona setup screen.
+
+
 
 
 
