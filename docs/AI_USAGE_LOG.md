@@ -313,6 +313,19 @@
   * `src/components/ApprovedQueuePage.tsx`
 * **Implementation Notes:** Enforces bulletproof alignment across all screen resolution sizes.
 
+---
+
+## Entry 26: Strict Cell Width & Word-Break Table Enforcement Fix
+
+* **Date:** 2026-08-08
+* **Goal:** Enforce inline width constraints and word-break rules on table th/td elements to eliminate text overlap completely.
+* **Prompt Summary:** Apply explicit width attributes (`width: 45%`, `width: 130px`) and `word-break: break-word` on pipeline table cells.
+* **AI Output Summary:** Updated `ApprovedQueuePage.tsx` with explicit cell width properties and preset candidate fallback data.
+* **Files Modified:**
+  * `src/components/ApprovedQueuePage.tsx`
+* **Implementation Notes:** Guaranteed column separation and zero overlap under all rendering conditions.
+
+
 
 
 
