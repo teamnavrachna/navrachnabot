@@ -77,10 +77,10 @@ export default function App() {
       {/* Main Canvas */}
       <main style={{ position: 'relative', zIndex: 1 }}>
         <div
+          className="px-4 py-6 sm:px-8 sm:py-12"
           style={{
             maxWidth: PAGE_WIDTHS[page],
             margin: '0 auto',
-            padding: '48px 32px 80px',
             transition: 'max-width 0.25s cubic-bezier(0.2, 0, 0, 1)',
           }}
         >

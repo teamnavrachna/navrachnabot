@@ -150,7 +150,7 @@ export function Sidebar({
                   color={active ? 'var(--accent)' : 'currentColor'}
                   style={{ flexShrink: 0 }}
                 />
-                {item.label}
+                <span className="hidden sm:inline">{item.label}</span>
                 {item.id === 'queue' && queueCount > 0 && (
                   <span
                     style={{

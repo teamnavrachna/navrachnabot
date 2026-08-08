@@ -70,8 +70,8 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
         </div>
       </div>
 
-      {/* ── KPI Grid: 4-column Bento ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }} className="grid-cols-2 lg:grid-cols-4">
+      {/* ── KPI Grid: Responsive 2x2 on Mobile, 4-column on Desktop ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard title="Topics Scanned" value={totalFound} icon={Search} accent="#22D3EE" note="All cycles" />
         <KpiCard title="Approved" value={totalApproved} icon={CheckCircle2} accent="#22C55E" note="Passed threshold" />
         <KpiCard title="Rejected" value={totalRejected} icon={Filter} accent="#F59E0B" note="Below threshold" />
@@ -99,7 +99,15 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
             {scanning ? '⚡ Scanning live feeds...' : `${formatCountdown(secondsLeft)} remaining`}
           </span>
         </div>
-        <div style={{ height: 6, background: 'var(--bg-inset)', borderRadius: 9999, overflow: 'hidden' }}>
+        {/* Progress Bar */}
+        <div
+          style={{
+            height: 6,
+            background: 'var(--bg-inset)',
+            borderRadius: 9999,
+            overflow: 'hidden',
+          }}
+        >
           <div
             style={{
               height: '100%',
@@ -116,7 +124,7 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
       </div>
 
       {/* ── Second Row: Status Panel + Activity Stream ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 16 }} className="grid-cols-1 lg:grid-cols-3">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
         {/* Autonomy Status */}
         <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: 24, boxShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>

@@ -43,7 +43,7 @@ export function Onboarding({ onCreate }: { onCreate: (p: Persona) => void }) {
   };
 
   return (
-    <div style={{ minHeight:'100vh', background:'var(--bg-app)', display:'flex', alignItems:'center', justifyContent:'center', padding:'24px', fontFamily:'var(--font-sans)' }}>
+    <div style={{ minHeight:'100vh', background:'var(--bg-app)', display:'flex', alignItems:'center', justifyContent:'center', padding:'16px 12px', fontFamily:'var(--font-sans)' }}>
       {/* Ambient glows */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl" />
