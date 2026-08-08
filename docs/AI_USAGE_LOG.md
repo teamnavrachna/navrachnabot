@@ -160,4 +160,22 @@
   * `README.md`
 * **Implementation Notes:** Ensured all services expose decoupled static interfaces for rapid 20-minute Live Steer modification.
 
+---
+
+## Entry 14: Standardized Repository Root Restructuring
+
+* **Date:** 2026-08-08
+* **Goal:** Promote frontend source code (`src/`, `package.json`, `index.html`) from temporary directory to root level for clear GitHub visibility.
+* **Prompt Summary:** Re-organize workspace files so all frontend, backend, and documentation files are directly visible in root directory.
+* **AI Output Summary:** Restructured root directory, removed legacy scratch path, and updated `.gitignore` and `README.md`.
+* **Files Modified:**
+  * `src/*`
+  * `package.json`
+  * `index.html`
+  * `vite.config.ts`
+  * `README.md`
+  * `.gitignore`
+* **Implementation Notes:** Elevated repository clarity so judges can immediately inspect frontend (`src/`) alongside backend (`app/`) and hackathon logs (`docs/`).
+
+
 

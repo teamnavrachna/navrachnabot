@@ -54,30 +54,17 @@ The platform operates through a 6-stage continuous loop:
 
 ```
 .
-├── app/
-│   ├── main.py                    # FastAPI entry point & APScheduler lifecycle
-│   ├── api/
-│   │   └── endpoints.py           # API endpoints (/api/agent/init, /feed, /queue, /status)
-│   ├── db/
-│   │   ├── database.py            # SQLAlchemy database connection setup
-│   │   └── models.py              # Agent, Topic, Evaluation, Post, PublishingLog ORM models
-│   ├── schemas/
-│   │   └── schemas.py             # Pydantic request & response schemas
-│   └── services/
-│       ├── discovery.py           # Multi-source RSS & web discovery engine
-│       ├── editorial.py           # 7-dimension scoring & rejection engine
-│       ├── memory.py              # Vector memory & continuity lookup
-│       ├── generator.py           # Structured report & rationale generator
-│       └── scheduler_tasks.py     # Background APScheduler continuous runner
-├── docs/
-│   ├── AI_USAGE_LOG.md            # Detailed milestone tracking of AI prompts & implementation
-│   ├── PROMPT_HISTORY.md          # Complete archive of prompts, goals, and affected files
-│   └── DEVELOPMENT_JOURNAL.md     # Chronological development milestone journal
-├── scratch/friend_zip/project/    # React/Vite SPA Frontend (TypeScript & Tailwind)
-├── Dockerfile                     # Production container spec
-├── render.yaml                    # Render Blueprint specification
-├── requirements.txt               # Dependencies
-└── README.md                      # Platform documentation
+├── app/                  # FastAPI backend (api, db, schemas, services, main.py)
+├── src/                  # React/Vite Frontend source (App.tsx, components/, hooks/, lib/)
+├── docs/                 # Hackathon logs (AI_USAGE_LOG.md, PROMPT_HISTORY.md, DEVELOPMENT_JOURNAL.md)
+├── index.html            # Vite HTML entry point
+├── package.json          # Node dependencies
+├── vite.config.ts        # Vite configuration
+├── tsconfig.json         # TypeScript configuration
+├── Dockerfile            # Production container specification
+├── render.yaml           # Render Blueprint specification
+├── requirements.txt      # Python dependencies
+└── README.md             # Platform documentation
 ```
 
 ---

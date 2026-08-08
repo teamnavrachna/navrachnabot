@@ -11,9 +11,10 @@ venv/
 .env
 !.env.example
 
-# Node / Vite
+# Node / Vite / Build
 node_modules/
 dist/
+.bolt/
 
 # OS / IDE
 .DS_Store
