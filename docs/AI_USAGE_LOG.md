@@ -338,6 +338,20 @@
   * `src/components/Sidebar.tsx`
 * **Implementation Notes:** Seamless real-time theme toggling with persistent user preference storage.
 
+---
+
+## Entry 28: Streamlit Community Cloud Entrypoint Creation
+
+* **Date:** 2026-08-08
+* **Goal:** Create native `streamlit_app.py` entrypoint in root directory for seamless Streamlit Community Cloud deployment.
+* **Prompt Summary:** Implement Streamlit dashboard interface (`streamlit_app.py`) exposing control panel, RSS discovery stats, editorial pipeline table, and live activity stream.
+* **AI Output Summary:** Created `streamlit_app.py` in root directory for instant Streamlit Cloud integration.
+* **Files Modified:**
+  * `streamlit_app.py`
+  * `README.md`
+* **Implementation Notes:** Enables 1-click Streamlit Cloud deployment using `streamlit_app.py` as Main file path.
+
+
 
 
 
