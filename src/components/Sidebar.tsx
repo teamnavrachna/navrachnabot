@@ -1,4 +1,4 @@
-import { LayoutDashboard, Newspaper, Terminal, Inbox, Settings, Cpu, History, RotateCcw, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Newspaper, Terminal, Inbox, Settings, Cpu, History, RotateCcw, Sparkles, Sun, Moon } from 'lucide-react';
 import type { Persona } from '../types';
 
 export type Page = 'dashboard' | 'activity' | 'queue' | 'feed' | 'history' | 'system' | 'settings';
@@ -20,6 +20,8 @@ export function Sidebar({
   postCount,
   bookmarkCount,
   onReset,
+  theme,
+  onToggleTheme,
   ctrl,
 }: {
   page: Page;
@@ -207,6 +209,44 @@ export function Sidebar({
             </span>
           </div>
 
+          {/* Theme Toggle Button */}
+          {onToggleTheme && (
+            <button
+              onClick={onToggleTheme}
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              style={{
+                height: 32,
+                padding: '0 10px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                borderRadius: 8,
+                background: 'var(--bg-inset)',
+                border: '1px solid var(--border-default)',
+                color: 'var(--text-secondary)',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                fontSize: 12,
+                fontFamily: 'var(--font-mono)',
+                fontWeight: 600,
+                flexShrink: 0,
+              }}
+              className="hover:border-accent hover:text-primary"
+            >
+              {theme === 'light' ? (
+                <>
+                  <Moon size={14} className="text-accent" />
+                  <span className="hidden sm:inline">DARK</span>
+                </>
+              ) : (
+                <>
+                  <Sun size={14} className="text-warning" />
+                  <span className="hidden sm:inline">LIGHT</span>
+                </>
+              )}
+            </button>
+          )}
+
           <button
             onClick={onReset}
             title="Reset agent session"
@@ -217,8 +257,8 @@ export function Sidebar({
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: 8,
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.07)',
+              background: 'var(--bg-inset)',
+              border: '1px solid var(--border-default)',
               color: 'var(--text-muted)',
               cursor: 'pointer',
               transition: 'all 0.12s ease',
@@ -227,14 +267,14 @@ export function Sidebar({
             onMouseEnter={(e) => {
               const el = e.currentTarget;
               el.style.color = '#EF4444';
-              el.style.background = 'rgba(239,68,68,0.08)';
-              el.style.borderColor = 'rgba(239,68,68,0.2)';
+              el.style.background = 'rgba(239,68,68,0.1)';
+              el.style.borderColor = 'rgba(239,68,68,0.3)';
             }}
             onMouseLeave={(e) => {
               const el = e.currentTarget;
               el.style.color = 'var(--text-muted)';
-              el.style.background = 'rgba(255,255,255,0.04)';
-              el.style.borderColor = 'rgba(255,255,255,0.07)';
+              el.style.background = 'var(--bg-inset)';
+              el.style.borderColor = 'var(--border-default)';
             }}
           >
             <RotateCcw size={13} />
