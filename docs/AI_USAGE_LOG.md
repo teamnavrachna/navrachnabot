@@ -1,0 +1,133 @@
+# AI Usage Log — Navarachna
+
+> **Document Purpose:** Transparent audit of AI-assisted engineering tasks, prompt intents, output summaries, modified files, and technical implementation decisions across development milestones.
+
+---
+
+## Entry 1: Core Architecture & Database Schema Design
+
+* **Date:** 2026-08-07
+* **Goal:** Establish foundational FastAPI application structure, SQLite database schema, and Pydantic schemas for autonomous agent tracking.
+* **Prompt Summary:** Design a modular database schema for an autonomous AI analyst that tracks agents, candidate topics, editorial evaluations, generated posts, and publishing logs.
+* **AI Output Summary:** Proposed SQLAlchemy ORM models (`Agent`, `Topic`, `Evaluation`, `Post`, `PublishingLog`) with proper foreign keys and UUID primary keys.
+* **Files Modified:**
+  * `app/db/models.py`
+  * `app/db/database.py`
+  * `app/schemas/schemas.py`
+* **Implementation Notes:** Enforced SQLite string UUIDs and datetime tracking to support historical timeline queries.
+
+---
+
+## Entry 2: Autonomous Discovery & Scraper Service
+
+* **Date:** 2026-08-07
+* **Goal:** Build multi-source candidate discovery engine integrating arXiv RSS feeds, Hacker News, IEEE Spectrum, and TechCrunch.
+* **Prompt Summary:** Implement a topic discovery service that fetches live technology candidate titles, summaries, and source URLs filtered by targeted domain.
+* **AI Output Summary:** Implemented `DiscoveryService` with `feedparser` RSS integration and domain-specific search query expansion.
+* **Files Modified:**
+  * `app/services/discovery.py`
+* **Implementation Notes:** Created fallback mock discovery generators to handle network timeouts or rate limits gracefully without breaking pipeline execution.
+
+---
+
+## Entry 3: 7-Dimension Editorial Scoring Engine
+
+* **Date:** 2026-08-07
+* **Goal:** Construct a multi-criteria scoring algorithm to evaluate candidate topics and reject low-signal topics.
+* **Prompt Summary:** Implement a weighted scoring system across 7 dimensions (Relevance, Impact, Novelty, Long-Term Value, Source Quality, Persona Alignment, Uniqueness) with configurable threshold.
+* **AI Output Summary:** Created `EditorialService` returning a composite score (0-100), selection rationale, and rejection reasons for failing topics.
+* **Files Modified:**
+  * `app/services/editorial.py`
+* **Implementation Notes:** Set default quality threshold to 70/100 to ensure only high-signal topics advance to the publishing queue.
+
+---
+
+## Entry 4: Vector Memory & Continuity Engine
+
+* **Date:** 2026-08-07
+* **Goal:** Prevent duplicate topic coverage and provide historical continuity across publishing cycles.
+* **Prompt Summary:** Design a memory lookup service that compares incoming candidate topics with previously published intelligence posts.
+* **AI Output Summary:** Implemented similarity checking and memory context retrieval (`MemoryService`) to inject past observations into new post drafts.
+* **Files Modified:**
+  * `app/services/memory.py`
+* **Implementation Notes:** Enables posts to reference past cycles (*"Building upon our previous analysis from cycle #12..."*).
+
+---
+
+## Entry 5: Observation-Insight-Implication Content Generator
+
+* **Date:** 2026-08-07
+* **Goal:** Generate structured executive technology intelligence reports using Gemini 1.5 Flash API with deterministic fallback.
+* **Prompt Summary:** Create an intelligence report generator structured into Observation, Insight, and Strategic Implication paragraphs.
+* **AI Output Summary:** Implemented `GeneratorService` with system prompt framing for specialized personas and structured post generation.
+* **Files Modified:**
+  * `app/services/generator.py`
+* **Implementation Notes:** Added automated fallback logic to ensure content generation succeeds even during LLM API rate limits.
+
+---
+
+## Entry 6: APScheduler Autonomous Pipeline Daemon
+
+* **Date:** 2026-08-07
+* **Goal:** Orchestrate continuous background execution loops for topic discovery and automated publishing.
+* **Prompt Summary:** Configure APScheduler to run Engine 1 (Discovery & Scoring) and Engine 2 (Queue Publishing) as non-blocking background tasks.
+* **AI Output Summary:** Implemented background scheduler lifecycle in FastAPI startup/shutdown events.
+* **Files Modified:**
+  * `app/main.py`
+  * `app/services/scheduler_tasks.py`
+* **Implementation Notes:** Configured a 30-second continuous discovery loop for real-time demonstration during judging.
+
+---
+
+## Entry 7: React Frontend & Command Center Navigation
+
+* **Date:** 2026-08-08
+* **Goal:** Build high-performance React/Vite SPA frontend with live backend API polling.
+* **Prompt Summary:** Create a Command Center UI with navigation tabs (Dashboard, Feed, Pipeline, Activity, History, System, Settings) and theme support.
+* **AI Output Summary:** Implemented `App.tsx`, `Sidebar.tsx`, and state management hooks (`useAppState.ts`).
+* **Files Modified:**
+  * `scratch/friend_zip/project/src/App.tsx`
+  * `scratch/friend_zip/project/src/components/Sidebar.tsx`
+  * `scratch/friend_zip/project/src/hooks/useAppState.ts`
+* **Implementation Notes:** Integrated `sessionStorage` page persistence and real-time backend API polling every 3 seconds.
+
+---
+
+## Entry 8: Editorial Pipeline & Activity Stream Components
+
+* **Date:** 2026-08-08
+* **Goal:** Visualize approved candidate queues and real-time stdout logs for judges.
+* **Prompt Summary:** Build dedicated UI components for Editorial Pipeline table ranking and Live Activity Stream stdout log.
+* **AI Output Summary:** Built `ApprovedQueuePage.tsx` and `ActivityStreamPage.tsx` with priority badges, filtering, and status metrics.
+* **Files Modified:**
+  * `scratch/friend_zip/project/src/components/ApprovedQueuePage.tsx`
+  * `scratch/friend_zip/project/src/components/ActivityStreamPage.tsx`
+* **Implementation Notes:** Added badge filters (`ALL`, `DISCOVERY`, `ACCEPT`, `REJECT`, `PUBLISH`) for granular audit capability.
+
+---
+
+## Entry 9: UI/UX Architecture Alignment Pass
+
+* **Date:** 2026-08-08
+* **Goal:** Refine visual layout into a centered application shell with strict grid spacing and Inter/JetBrains Mono typography.
+* **Prompt Summary:** Align visual hierarchy into centered page max-widths (1440px/1280px/1100px/960px), zero left-anchored panels, and clean Bento KPI grid.
+* **AI Output Summary:** Rebuilt `index.css`, `Dashboard.tsx`, `Feed.tsx`, and `PersonaSettings.tsx` to match Vercel/Linear design standards.
+* **Files Modified:**
+  * `scratch/friend_zip/project/src/index.css`
+  * `scratch/friend_zip/project/src/components/Dashboard.tsx`
+  * `scratch/friend_zip/project/src/components/Feed.tsx`
+  * `scratch/friend_zip/project/src/components/PersonaSettings.tsx`
+* **Implementation Notes:** Ensured all text elements use Inter & JetBrains Mono with standard dark slate background `#0B0F14`.
+
+---
+
+## Entry 10: Dynamic Settings Synchronization & Production Build
+
+* **Date:** 2026-08-08
+* **Goal:** Ensure agent name, domain, writing style, scan interval, and editorial threshold apply dynamically across frontend and backend.
+* **Prompt Summary:** Update settings handler so persona updates sync instantly across hero banner, navigation status pill, and backend session state.
+* **AI Output Summary:** Implemented state sync in `PersonaSettings.tsx` with smooth domain-change session re-initialization.
+* **Files Modified:**
+  * `scratch/friend_zip/project/src/components/PersonaSettings.tsx`
+  * `scratch/friend_zip/project/src/components/Dashboard.tsx`
+* **Implementation Notes:** Deployed compiled production static assets directly to `app/static/` for unified FastAPI serving.

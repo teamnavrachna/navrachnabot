@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: navarachna-agent
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        value: sqlite:///./navarachna.db
+      - key: CYCLE_INTERVAL_MINUTES
+        value: "30"
+      - key: PUBLISH_SCORE_THRESHOLD
+        value: "70"
