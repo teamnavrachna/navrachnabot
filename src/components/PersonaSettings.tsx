@@ -123,7 +123,7 @@ export function PersonaSettings({ ctrl }: { ctrl: AppController }) {
             WRITING VOICE &amp; TONE
           </label>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 12 }} className="grid-cols-2 md:grid-cols-4">
             {WRITING_STYLES.map((s) => {
               const active = style === s;
               return (
@@ -270,7 +270,7 @@ export function PersonaSettings({ ctrl }: { ctrl: AppController }) {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
           {DOMAINS.map((d) => {
             const Icon = DOMAIN_ICONS[d];
             const active = domain === d;

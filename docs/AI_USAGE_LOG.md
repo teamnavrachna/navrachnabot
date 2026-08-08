@@ -226,6 +226,19 @@
   * `src/components/ActivityStreamPage.tsx`
 * **Implementation Notes:** Terminal logs now continuously render discovery, approval, rejection, and broadcast events in real-time.
 
+---
+
+## Entry 19: Writing Voice & Tone Button Grid Alignment Fix
+
+* **Date:** 2026-08-08
+* **Goal:** Fix alignment of Writing Voice & Tone and Domain Focus Area buttons for clean 4-column and 3x2 grid symmetry.
+* **Prompt Summary:** Adjust grid column minmax values so 4 writing style cards fit in a single balanced row (or 2x2 on mobile) without lonely hanging cards.
+* **AI Output Summary:** Updated grid CSS rules in `PersonaSettings.tsx` to use `repeat(auto-fit, minmax(190px, 1fr))` and `grid-cols-2 md:grid-cols-4`.
+* **Files Modified:**
+  * `src/components/PersonaSettings.tsx`
+* **Implementation Notes:** All setting cards now align symmetrically across all container widths.
+
+
 
 
 
