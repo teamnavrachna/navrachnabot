@@ -1,132 +1,68 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import os
-import sys
-import json
-import time
-from datetime import datetime
+import glob
+import re
 
-# Page configuration
+# Streamlit Page Configuration
 st.set_page_config(
     page_title="Navarachna — Autonomous Technology Intelligence Platform",
     page_icon="⚡",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
-# Apply Custom Glassmorphic Styling
+# Hide Streamlit default padding and headers for full-screen web app experience
 st.markdown("""
 <style>
-    .main {
-        background-color: #070A0F;
-        color: #F1F5F9;
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    div.block-container {
+        padding-top: 0rem !important;
+        padding-bottom: 0rem !important;
+        padding-left: 0rem !important;
+        padding-right: 0rem !important;
+        max-width: 100% !important;
     }
-    .stApp {
-        background-image: 
-            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(34, 211, 238, 0.14), transparent),
-            radial-gradient(ellipse 60% 40% at 85% 60%, rgba(96, 165, 250, 0.10), transparent);
-        background-attachment: fixed;
-    }
-    .metric-card {
-        background: rgba(29, 36, 48, 0.70);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.10);
-        border-radius: 14px;
-        padding: 20px;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
-    }
-    .badge-cyan {
-        background: rgba(34, 211, 238, 0.12);
-        color: #22D3EE;
-        border: 1px solid rgba(34, 211, 238, 0.35);
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-family: monospace;
-        font-size: 12px;
+    iframe {
+        border: none !important;
+        width: 100% !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Add app folder to path for python imports
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-# Title Header
-st.title("⚡ NAVARACHNA")
-st.caption("Autonomous Technology Intelligence Platform • Real-time RSS Scan & LLM Editorial Scoring")
-
-# Sidebar Configuration
-st.sidebar.header("🕹️ Control Panel")
-domain = st.sidebar.selectbox("Target Research Domain", ["Robotics", "Machine Learning", "AI Security", "AI Products", "AI Research", "AI Ethics & Policy"])
-style = st.sidebar.selectbox("Writing Style & Voice", ["Analytical", "Conversational", "Bold & Opinionated", "Technical"])
-scan_interval = st.sidebar.slider("Execution Loop Interval (Seconds)", min_value=10, max_value=300, value=30, step=10)
-signal_threshold = st.sidebar.slider("Editorial Quality Signal Threshold", min_value=50, max_value=95, value=75, step=5)
-
-st.sidebar.divider()
-st.sidebar.success(f"🟢 Autonomous Scheduler Active ({scan_interval}s)")
-
-# Main Navigation Tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Dashboard", "📰 Published Feed", "📥 Editorial Pipeline", "🖥️ Activity Stream", "⚙️ Settings"])
-
-with tab1:
-    st.subheader("Autonomous Command Center")
+@st.cache_data
+def load_standalone_html():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    static_dir = os.path.join(base_dir, "app", "static")
     
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("Topics Scanned", "14", "+4 this cycle")
-    with col2:
-        st.metric("Approved Queue", "3", "High Pressure")
-    with col3:
-        st.metric("Published Reports", "1", "98.5% Signal")
-    with col4:
-        st.metric("System Health", "99.8%", "APScheduler Active")
+    html_path = os.path.join(static_dir, "index.html")
+    if not os.path.exists(html_path):
+        return "<h2 style='color:red; text-align:center; padding-top: 50px;'>Build artifact index.html not found in app/static/</h2>"
+        
+    with open(html_path, "r", encoding="utf-8") as f:
+        html_content = f.read()
 
-    st.divider()
+    # Locate compiled assets
+    js_files = glob.glob(os.path.join(static_dir, "assets", "*.js"))
+    css_files = glob.glob(os.path.join(static_dir, "assets", "*.css"))
 
-    st.markdown("### 📰 Latest Published Briefing")
-    st.markdown("""
-    #### Small Language Models with Hugging Face transformers Library + smolLM3
-    **Domain:** Robotics & AI Infrastructure • **Score:** 86.0/100
-    
-    > **EXECUTIVE SUMMARY:** Running a 70B parameter model in production is computationally expensive. Compact Small Language Models (SLMs) now achieve comparable performance on specialized tasks with 10x lower latency.
-    
-    > **WHY IT MATTERS:** Edge deployment of robotics and autonomous agents requires localized sub-100ms inference without cloud dependency.
-    """)
+    css_code = ""
+    for css_file in css_files:
+        with open(css_file, "r", encoding="utf-8") as f:
+            css_code += f.read() + "\n"
 
-    st.divider()
-    
-    with st.expander("🛡️ System Editorial Audit"):
-        st.write("**Why Selected:** High relevance score (86.0/100) based on source credibility (KDnuggets) and strategic alignment.")
-        st.write("**Candidates Evaluated:** 8 candidate topics scanned from arXiv and live web sources.")
-        st.write("**Filtered Candidates:** 7 below editorial signal threshold.")
+    js_code = ""
+    for js_file in js_files:
+        with open(js_file, "r", encoding="utf-8") as f:
+            js_code += f.read() + "\n"
 
-with tab2:
-    st.subheader("Published Intelligence Briefings")
-    st.info("Showing 1 active published briefing generated by continuous discovery loop.")
-    st.write("### Small Language Models with Hugging Face transformers Library + smolLM3")
-    st.write("Published 5 minutes ago • Domain: " + domain)
-    st.write("Running a 70B model in production is expensive, and for many tasks, unnecessary. Efficient SLM architectures enable edge intelligence.")
+    # Inline CSS and JS into self-contained HTML bundle
+    html_content = re.sub(r'<link rel="stylesheet"[^>]*>', f'<style>\n{css_code}\n</style>', html_content)
+    html_content = re.sub(r'<script type="module"[^>]*></script>', f'<script type="module">\n{js_code}\n</script>', html_content)
 
-with tab3:
-    st.subheader("Active Priority Queue (Editorial Pipeline)")
-    import pandas as pd
-    data = [
-        {"Priority": "P1", "Headline": "Small Language Models with Hugging Face transformers Library", "Score": "86.0 / 100", "Source": "KDnuggets", "Status": "BUFFERED"},
-        {"Priority": "P2", "Headline": "5 Free Courses to Learn Modern AI and LLMs", "Score": "86.0 / 100", "Source": "KDnuggets", "Status": "BUFFERED"},
-        {"Priority": "P3", "Headline": "Beyond Bots: Rethinking AI Support with a Hybrid Architecture", "Score": "86.0 / 100", "Source": "KDnuggets", "Status": "BUFFERED"}
-    ]
-    st.table(pd.DataFrame(data))
+    return html_content
 
-with tab4:
-    st.subheader("Live Activity Terminal Log")
-    st.code(f"""
-[14:15:03] INFO: Discovery Loop Executed ({scan_interval}s interval)
-[14:15:04] INFO: Scanned 14 RSS candidate topics from arXiv / Web
-[14:15:05] INFO: Topic Approved: 'Small Language Models' (Score: 86.0/100)
-[14:15:06] INFO: Broadcasted published briefing to live intelligence feed
-    """, language="bash")
-
-with tab5:
-    st.subheader("Platform Parameters & Persona Configuration")
-    st.text_input("Analyst Persona Name", "Navarachna")
-    st.selectbox("Editorial Tone Preference", ["Analytical", "Conversational", "Bold & Opinionated", "Technical"])
-    if st.button("Save Settings"):
-        st.success("Configuration updated successfully!")
+full_html = load_standalone_html()
+components.html(full_html, height=1050, scrolling=True)

@@ -351,6 +351,19 @@
   * `README.md`
 * **Implementation Notes:** Enables 1-click Streamlit Cloud deployment using `streamlit_app.py` as Main file path.
 
+---
+
+## Entry 29: Streamlit Full React Standalone App Bundle Embedding
+
+* **Date:** 2026-08-08
+* **Goal:** Enable Streamlit Community Cloud to render the full React Command Center UI (Dark/Light mode, Bento grid, Pipeline, Settings) natively.
+* **Prompt Summary:** Rewrite `streamlit_app.py` to inline compiled Vite JS/CSS assets into a self-contained HTML bundle served via `st.components.v1.html`.
+* **AI Output Summary:** Implemented asset inliner in `streamlit_app.py` to display the entire React SPA directly on Streamlit Cloud.
+* **Files Modified:**
+  * `streamlit_app.py`
+* **Implementation Notes:** Verified HTTP 200 execution on Streamlit server port 8501.
+
+
 
 
 
