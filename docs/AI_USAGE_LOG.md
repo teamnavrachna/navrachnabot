@@ -388,6 +388,19 @@
   * `vercel.json` (CREATED)
 * **Implementation Notes:** Verified 0-error production build to `dist/` directory.
 
+---
+
+## Entry 32: Standalone Vercel Live Autonomous Discovery Cycle Fix
+
+* **Date:** 2026-08-08
+* **Goal:** Ensure continuous real-time topic discovery, countdown loop updates, and published briefing generation when deployed on Vercel.
+* **Prompt Summary:** Add automatic client engine discovery cycle trigger on countdown completion and initial empty state in `useAppState.ts`.
+* **AI Output Summary:** Updated `useAppState.ts` to trigger `runScan()` on timer completion (every 30s) and on initial mount if state is unpopulated.
+* **Files Modified:**
+  * `src/hooks/useAppState.ts`
+* **Implementation Notes:** Enables 100% active autonomous simulation on static cloud hosts without needing backend connection.
+
+
 
 
 

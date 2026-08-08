@@ -54,19 +54,41 @@ export function useAppState() {
     };
   }, []);
 
+  // Autonomous scan on initial load if empty
+  useEffect(() => {
+    if (!state.persona) return;
+    if (state.scans.length === 0 && !scanLock.current) {
+      scanLock.current = true;
+      const { newState } = runScan(state);
+      setState(newState);
+      scanLock.current = false;
+    }
+  }, [state.persona]);
+
   // Dynamic autonomous countdown timer loop based on user configuration
   useEffect(() => {
     const timer = setInterval(() => {
       setTimerSeconds((prev) => {
         const currentMax = getScanIntervalSeconds();
         if (prev <= 1 || prev > currentMax) {
+          if (!scanLock.current && state.persona) {
+            scanLock.current = true;
+            setTimeout(() => {
+              setState((latestState) => {
+                if (!latestState.persona) return latestState;
+                const { newState } = runScan(latestState);
+                return newState;
+              });
+              scanLock.current = false;
+            }, 50);
+          }
           return currentMax;
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [state.persona]);
 
   useEffect(() => {
     save(state);
