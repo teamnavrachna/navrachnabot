@@ -40,12 +40,27 @@ export function useAppState() {
 
   const [timerSeconds, setTimerSeconds] = useState(getScanIntervalSeconds());
 
+  // Listen for setting changes to dynamically update countdown timer
+  useEffect(() => {
+    const handleIntervalChange = () => {
+      const newInterval = getScanIntervalSeconds();
+      setTimerSeconds(newInterval);
+    };
+    window.addEventListener('navarachna_interval_changed', handleIntervalChange);
+    window.addEventListener('storage', handleIntervalChange);
+    return () => {
+      window.removeEventListener('navarachna_interval_changed', handleIntervalChange);
+      window.removeEventListener('storage', handleIntervalChange);
+    };
+  }, []);
+
   // Dynamic autonomous countdown timer loop based on user configuration
   useEffect(() => {
     const timer = setInterval(() => {
       setTimerSeconds((prev) => {
-        if (prev <= 1) {
-          return getScanIntervalSeconds();
+        const currentMax = getScanIntervalSeconds();
+        if (prev <= 1 || prev > currentMax) {
+          return currentMax;
         }
         return prev - 1;
       });

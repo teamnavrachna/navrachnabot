@@ -47,6 +47,7 @@ export function PersonaSettings({ ctrl }: { ctrl: AppController }) {
     localStorage.setItem('navarachna_scan_interval_min', String(scanInterval));
     localStorage.setItem('navarachna_signal_score_threshold', String(signalScore));
 
+    window.dispatchEvent(new Event('navarachna_interval_changed'));
     updatePersona({ ...persona, name: name.trim(), domain, writingStyle: style });
 
     setSaved(true);
@@ -142,8 +143,13 @@ export function PersonaSettings({ ctrl }: { ctrl: AppController }) {
           min={0}
           max={INTERVAL_PRESETS.length - 1}
           step={1}
-          value={intervalIdx !== -1 ? intervalIdx : 4}
-          onChange={(e) => setScanInterval(INTERVAL_PRESETS[parseInt(e.target.value)].value)}
+          value={intervalIdx !== -1 ? intervalIdx : 0}
+          onChange={(e) => {
+            const val = INTERVAL_PRESETS[parseInt(e.target.value)].value;
+            setScanInterval(val);
+            localStorage.setItem('navarachna_scan_interval_min', String(val));
+            window.dispatchEvent(new Event('navarachna_interval_changed'));
+          }}
           style={{ width: '100%', accentColor: 'var(--highlight)', cursor: 'pointer', height: 6 }}
         />
 

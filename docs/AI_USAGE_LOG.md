@@ -177,5 +177,19 @@
   * `.gitignore`
 * **Implementation Notes:** Elevated repository clarity so judges can immediately inspect frontend (`src/`) alongside backend (`app/`) and hackathon logs (`docs/`).
 
+---
+
+## Entry 15: Dynamic Discovery Timer Synchronization Fix
+
+* **Date:** 2026-08-08
+* **Goal:** Fix real-time synchronization between configured execution interval and dashboard discovery timer.
+* **Prompt Summary:** Resolve issue where scan countdown timer retained stale interval values when user adjusted settings.
+* **AI Output Summary:** Added event listener (`navarachna_interval_changed`) and auto-capping logic in `useAppState.ts` and `PersonaSettings.tsx`.
+* **Files Modified:**
+  * `src/hooks/useAppState.ts`
+  * `src/components/PersonaSettings.tsx`
+* **Implementation Notes:** Slider adjustments now immediately update the live countdown display in real-time.
+
+
 
 
