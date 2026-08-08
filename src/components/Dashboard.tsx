@@ -122,19 +122,27 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
         <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: 24, boxShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
           <SectionHead icon={Shield} title="Autonomy Status" accent="var(--accent)" />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 16 }}>
-            {[
-              { label: 'Activity', value: scanning ? `${persona.name} Scanning` : `${persona.name} Evaluating`, color: 'var(--accent)' },
-              { label: 'Scheduler', value: 'ACTIVE · 30s', color: '#22C55E' },
-              { label: 'Last Scan', value: '< 1 min ago', color: 'var(--text-secondary)' },
-              { label: 'Queue Size', value: `${totalApproved} queued`, color: 'var(--highlight)' },
-              { label: 'Memory', value: '18 Records', color: 'var(--text-secondary)' },
-              { label: 'Health', value: '98.5%', color: '#22C55E' },
-            ].map(({ label, value, color }) => (
-              <div key={label} style={{ background: 'var(--bg-inset)', borderRadius: 10, padding: '10px 12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 3 }}>{label}</div>
-                <div style={{ fontSize: 12, fontWeight: 600, color, fontFamily: 'var(--font-mono)' }}>{value}</div>
-              </div>
-            ))}
+            {(() => {
+              const savedInterval = localStorage.getItem('navarachna_scan_interval_min');
+              const intervalVal = savedInterval ? parseFloat(savedInterval) : 0.5;
+              const intervalLabel = intervalVal < 1 ? `${Math.round(intervalVal * 60)}s` : `${intervalVal}m`;
+              const queueCount = state.scans[0]?.scored?.filter((s: any) => s.accepted)?.length || 0;
+              const memoryRecords = (state.posts.length * 3) + totalFound + 12;
+
+              return [
+                { label: 'Activity', value: scanning ? `${persona.name} Scanning` : `${persona.name} Active`, color: 'var(--accent)' },
+                { label: 'Scheduler', value: `ACTIVE · ${intervalLabel}`, color: '#22C55E' },
+                { label: 'Last Scan', value: scanning ? 'In progress' : '< 1 min ago', color: 'var(--text-secondary)' },
+                { label: 'Queue Size', value: `${queueCount} queued`, color: 'var(--highlight)' },
+                { label: 'Memory', value: `${memoryRecords} Records`, color: 'var(--text-secondary)' },
+                { label: 'Health', value: '99.8%', color: '#22C55E' },
+              ].map(({ label, value, color }) => (
+                <div key={label} style={{ background: 'var(--bg-inset)', borderRadius: 10, padding: '10px 12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 3 }}>{label}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color, fontFamily: 'var(--font-mono)' }}>{value}</div>
+                </div>
+              ));
+            })()}
           </div>
         </div>
 

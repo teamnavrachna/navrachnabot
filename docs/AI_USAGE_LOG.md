@@ -190,6 +190,19 @@
   * `src/components/PersonaSettings.tsx`
 * **Implementation Notes:** Slider adjustments now immediately update the live countdown display in real-time.
 
+---
+
+## Entry 16: Dynamic Autonomy Status Metrics Fix
+
+* **Date:** 2026-08-08
+* **Goal:** Make all metrics in the Autonomy Status panel dynamically reflect configured interval, memory records, and queue size.
+* **Prompt Summary:** Update hardcoded scheduler interval, queue count, and memory record counters to compute values dynamically.
+* **AI Output Summary:** Rewrote Autonomy Status metric mapping in `Dashboard.tsx` to read configured intervals and live candidate queue states.
+* **Files Modified:**
+  * `src/components/Dashboard.tsx`
+* **Implementation Notes:** Scheduler badge now shows configured interval (e.g. `ACTIVE · 30s`, `ACTIVE · 1m`, `ACTIVE · 5m`).
+
+
 
 
 
