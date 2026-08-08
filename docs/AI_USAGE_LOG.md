@@ -288,6 +288,20 @@
   * `src/index.css`
 * **Implementation Notes:** Glass cards now blur through subtle cyan/blue background radial lights.
 
+---
+
+## Entry 24: Editorial Pipeline Table Alignment & Data-Table CSS Fix
+
+* **Date:** 2026-08-08
+* **Goal:** Fix text overlapping between Topic Headline and Signal Score columns in Editorial Pipeline table.
+* **Prompt Summary:** Define `.data-table` CSS rules with proper padding, border-collapse, column minWidths, and overflow wrapping.
+* **AI Output Summary:** Added `.data-table` styles to `src/index.css` and updated `src/components/ApprovedQueuePage.tsx` table th/td widths.
+* **Files Modified:**
+  * `src/index.css`
+  * `src/components/ApprovedQueuePage.tsx`
+* **Implementation Notes:** Eliminates text overlap and enforces horizontal padding and clean alignment across all pipeline rows.
+
+
 
 
 
