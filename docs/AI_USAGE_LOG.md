@@ -250,6 +250,20 @@
   * `src/components/Feed.tsx`
 * **Implementation Notes:** Eliminates single-paragraph wall-of-text and squished rationale columns.
 
+---
+
+## Entry 21: Footer Feedback Button Flex Alignment & Button Utility Fix
+
+* **Date:** 2026-08-08
+* **Goal:** Fix vertical icon stacking and misalignment on Feedback and Source buttons.
+* **Prompt Summary:** Add explicit `.btn` flex-row utility class in `index.css` and enforce `inline-flex`, `white-space: nowrap`, and `align-items: center` on feedback actions.
+* **AI Output Summary:** Added button design tokens to `src/index.css` and updated `src/components/Feed.tsx` button structures.
+* **Files Modified:**
+  * `src/index.css`
+  * `src/components/Feed.tsx`
+* **Implementation Notes:** Sources and feedback icons now align in 1 horizontal inline flex row with crisp hover borders.
+
+
 
 
 

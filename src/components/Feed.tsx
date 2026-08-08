@@ -207,34 +207,36 @@ export function Feed({ ctrl }: { ctrl: AppController }) {
           {/* Sources & Feedback */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, paddingTop: 20, borderTop: '1px solid var(--border-subtle)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span className="t-caption">Sources:</span>
+              <span className="t-caption" style={{ fontWeight: 600 }}>Sources:</span>
               {activePost.sources.map((s, idx) => (
-                <a key={idx} href={s.url} target="_blank" rel="noopener noreferrer" className="btn btn-ghost" style={{ fontSize: 12, padding: '4px 10px', borderRadius: 8 }}>
-                  {s.name} <ExternalLink size={11} />
+                <a key={idx} href={s.url} target="_blank" rel="noopener noreferrer" className="btn btn-ghost" style={{ fontSize: 12, padding: '6px 12px', borderRadius: 8, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <span>{s.name}</span> <ExternalLink size={12} />
                 </a>
               ))}
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span className="t-caption" style={{ marginRight: 4 }}>Feedback:</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span className="t-caption" style={{ marginRight: 4, fontWeight: 600 }}>Feedback:</span>
               <button
                 onClick={() => giveFeedback(activePost.id, 'liked')}
                 className={`btn ${activePost.feedback === 'liked' ? 'btn-primary' : ''}`}
-                style={{ borderRadius: 8 }}
+                style={{ borderRadius: 8, padding: '6px 12px', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 6 }}
               >
-                <ThumbsUp size={13} /> Relevant
+                <ThumbsUp size={13} />
+                <span>Relevant</span>
               </button>
               <button
                 onClick={() => giveFeedback(activePost.id, 'disliked')}
-                className="btn"
-                style={{ borderRadius: 8 }}
+                className={`btn ${activePost.feedback === 'disliked' ? 'btn-primary' : ''}`}
+                style={{ borderRadius: 8, padding: '6px 12px', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 6 }}
               >
-                <ThumbsDown size={13} /> Not Relevant
+                <ThumbsDown size={13} />
+                <span>Not Relevant</span>
               </button>
               <button
                 onClick={() => toggleBookmark(activePost.id)}
                 className={`btn ${state.bookmarks.includes(activePost.id) ? 'btn-primary' : ''}`}
-                style={{ borderRadius: 8 }}
+                style={{ borderRadius: 8, padding: '6px 10px', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 6 }}
               >
                 <Bookmark size={13} />
               </button>

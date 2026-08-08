@@ -219,6 +219,49 @@
   .badge-red { background: var(--danger-soft); color: var(--danger); border-color: var(--danger-border); }
   .badge-gray { background: rgba(255,255,255,0.05); color: var(--text-secondary); border-color: var(--border-default); }
 
+  /* Button system */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: var(--bg-inset);
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
+  }
+  .btn:hover {
+    background: var(--bg-inset-hover);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  .btn-primary {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: var(--accent-border);
+  }
+  .btn-primary:hover {
+    background: rgba(34, 211, 238, 0.2);
+    border-color: var(--accent);
+    box-shadow: 0 0 14px -4px rgba(34, 211, 238, 0.35);
+  }
+  .btn-ghost {
+    background: transparent;
+    border-color: transparent;
+    color: var(--text-secondary);
+  }
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+  }
+
   /* Nav item */
   .nav-item { display: flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 9px; font-size: 13px; font-weight: 500; transition: all 0.12s ease; cursor: pointer; border: 1px solid transparent; }
   .nav-item-default { color: var(--text-tertiary); }
