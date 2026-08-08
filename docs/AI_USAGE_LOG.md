@@ -414,6 +414,19 @@
   * `src/components/PersonaSettings.tsx`
 * **Implementation Notes:** Resetting immediately purges all state and returns to the initial Onboarding persona setup screen.
 
+---
+
+## Entry 34: Hardcoded Static Preset Purge & Dynamic Session Reset Fix
+
+* **Date:** 2026-08-08
+* **Goal:** Remove hardcoded static fallback topic arrays that persisted old output data across resets.
+* **Prompt Summary:** Purge `PRESET_BUFFERED_TOPICS` from `ApprovedQueuePage.tsx` and derive queue data dynamically from active scan evaluations.
+* **AI Output Summary:** Cleaned `ApprovedQueuePage.tsx` to display true domain-specific scanned topics or clean zero-item empty state upon session reset.
+* **Files Modified:**
+  * `src/components/ApprovedQueuePage.tsx`
+* **Implementation Notes:** Resetting now guarantees zero lingering legacy topics and fresh domain topic discovery.
+
+
 
 
 

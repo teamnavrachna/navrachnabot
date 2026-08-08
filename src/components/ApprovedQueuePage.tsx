@@ -2,39 +2,6 @@ import { useEffect, useState } from 'react';
 import { Inbox, RefreshCw, TrendingUp, CheckCircle2, Clock, Filter } from 'lucide-react';
 import type { AppController } from '../hooks/useAppState';
 
-const PRESET_BUFFERED_TOPICS = [
-  {
-    id: 'b-1',
-    title: 'Small Language Models with Hugging Face transformers Library + smolLM3',
-    summary: 'Running a 70B model in production is expensive, and for many tasks, unnecessary. Efficient SLM architectures enable edge intelligence.',
-    source: 'KDnuggets',
-    editorialScore: 86.0,
-    priorityScore: 86.0,
-    discoveredAt: new Date(Date.now() - 600000).toISOString(),
-    status: 'QUEUED'
-  },
-  {
-    id: 'b-2',
-    title: '5 Free Courses to Learn Modern AI and LLMs',
-    summary: 'Learn how to use generative AI at work, build RAG and agentic apps, fine-tune models, and deploy scalable AI pipelines.',
-    source: 'KDnuggets',
-    editorialScore: 86.0,
-    priorityScore: 86.0,
-    discoveredAt: new Date(Date.now() - 1200000).toISOString(),
-    status: 'QUEUED'
-  },
-  {
-    id: 'b-3',
-    title: 'Beyond Bots: Rethinking AI Support with a Hybrid AI Architecture',
-    summary: 'Learn how blending RAG and fine-tuning creates more effective AI support experiences with deterministic constraints.',
-    source: 'KDnuggets',
-    editorialScore: 86.0,
-    priorityScore: 86.0,
-    discoveredAt: new Date(Date.now() - 1800000).toISOString(),
-    status: 'QUEUED'
-  }
-];
-
 export function ApprovedQueuePage({ ctrl }: { ctrl: AppController }) {
   const { state } = ctrl;
   const [queueData, setQueueData] = useState<any>(null);
@@ -66,31 +33,27 @@ export function ApprovedQueuePage({ ctrl }: { ctrl: AppController }) {
 
   if (displayQueue.length === 0 && state.scans.length > 0) {
     const acceptedFromScans = state.scans[0]?.scored?.filter((s: any) => s.accepted) || [];
-    if (acceptedFromScans.length > 0) {
-      displayQueue = acceptedFromScans.map((s: any, idx: number) => ({
-        id: s.id || `q-${idx}`,
-        title: s.title,
-        summary: s.summary || s.tags?.join(' • ') || 'Autonomous intelligence topic candidate.',
-        source: s.source?.name || 'Live RSS',
-        editorialScore: s.score || 86,
-        priorityScore: s.significance || 88,
-        discoveredAt: new Date(s.publishedAt || Date.now()).toISOString(),
-        status: 'QUEUED'
-      }));
-    }
-  }
-
-  // Fallback to presets so table never renders empty or unformatted
-  if (displayQueue.length === 0) {
-    displayQueue = PRESET_BUFFERED_TOPICS;
+    displayQueue = acceptedFromScans.map((s: any, idx: number) => ({
+      id: s.id || `q-${idx}`,
+      title: s.title,
+      summary: s.summary || s.tags?.join(' • ') || 'Autonomous intelligence topic candidate.',
+      source: s.source?.name || 'arXiv / RSS',
+      editorialScore: s.score || 86,
+      priorityScore: s.significance || 88,
+      discoveredAt: new Date(s.publishedAt || Date.now()).toISOString(),
+      status: 'QUEUED'
+    }));
   }
 
   const sorted = [...displayQueue].sort((a, b) => (b.priorityScore || b.editorialScore || 0) - (a.priorityScore || a.editorialScore || 0));
+  const avgScore = sorted.length > 0 ? (sorted.reduce((acc, curr) => acc + (curr.editorialScore || 85), 0) / sorted.length) : 0;
+  const maxScore = sorted.length > 0 ? Math.max(...sorted.map(s => s.priorityScore || s.editorialScore || 85)) : 0;
+
   const qh = queueData?.queueHealth || {
     queueSize: sorted.length,
-    averageScore: 86.0,
-    highestPriorityScore: 92.0,
-    publishingPressure: 'MEDIUM'
+    averageScore: avgScore,
+    highestPriorityScore: maxScore,
+    publishingPressure: sorted.length >= 3 ? 'HIGH' : sorted.length >= 1 ? 'MEDIUM' : 'NOMINAL'
   };
 
   return (
@@ -119,9 +82,9 @@ export function ApprovedQueuePage({ ctrl }: { ctrl: AppController }) {
       {/* Metrics Row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }} className="animate-slide-up">
         <PipelineStat label="Buffered Topics" value={sorted.length} icon={Inbox} color="var(--accent)" />
-        <PipelineStat label="Average Score" value={qh.averageScore ? Number(qh.averageScore).toFixed(1) : '86.0'} icon={TrendingUp} color="var(--success)" />
-        <PipelineStat label="Highest Signal Score" value={qh.highestPriorityScore ? Number(qh.highestPriorityScore).toFixed(1) : '92.0'} icon={CheckCircle2} color="var(--highlight)" />
-        <PipelineStat label="Publish Pressure" value={qh.publishingPressure || 'MEDIUM'} icon={Filter} color="var(--warning)" />
+        <PipelineStat label="Average Score" value={qh.averageScore ? Number(qh.averageScore).toFixed(1) : '0.0'} icon={TrendingUp} color="var(--success)" />
+        <PipelineStat label="Highest Signal Score" value={qh.highestPriorityScore ? Number(qh.highestPriorityScore).toFixed(1) : '0.0'} icon={CheckCircle2} color="var(--highlight)" />
+        <PipelineStat label="Publish Pressure" value={qh.publishingPressure || 'NOMINAL'} icon={Filter} color="var(--warning)" />
       </div>
 
       {/* Main Data Table Card */}
@@ -152,37 +115,46 @@ export function ApprovedQueuePage({ ctrl }: { ctrl: AppController }) {
               </tr>
             </thead>
             <tbody>
-              {sorted.map((item: any, idx: number) => (
-                <tr key={item.id || idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ width: 75, paddingLeft: 20, paddingRight: 10, verticalAlign: 'top', paddingTop: 16 }}>
-                    <span className={`badge ${idx === 0 ? 'badge-cyan' : idx === 1 ? 'badge-blue' : 'badge-gray'}`}>
-                      P{idx + 1}
-                    </span>
-                  </td>
-                  <td style={{ paddingLeft: 12, paddingRight: 20, verticalAlign: 'top', paddingTop: 16 }}>
-                    <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4, lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-                      {item.title}
-                    </div>
-                    {item.summary && (
-                      <div className="text-secondary" style={{ fontSize: 12, lineHeight: 1.45, opacity: 0.85, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-                        {item.summary.length > 110 ? `${item.summary.slice(0, 110)}...` : item.summary}
-                      </div>
-                    )}
-                  </td>
-                  <td className="mono text-accent" style={{ width: 130, paddingLeft: 12, paddingRight: 16, verticalAlign: 'top', paddingTop: 16, fontWeight: 700, whiteSpace: 'nowrap' }}>
-                    {(item.editorialScore || item.priorityScore || item.score || 86).toFixed(1)} / 100
-                  </td>
-                  <td className="text-secondary" style={{ width: 130, paddingLeft: 12, paddingRight: 16, verticalAlign: 'top', paddingTop: 16, fontSize: 13, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {item.source || 'arXiv / RSS'}
-                  </td>
-                  <td className="mono text-muted" style={{ width: 110, paddingLeft: 12, paddingRight: 16, verticalAlign: 'top', paddingTop: 16, fontSize: 12, whiteSpace: 'nowrap' }}>
-                    {item.discoveredAt ? new Date(item.discoveredAt).toLocaleTimeString() : 'Just now'}
-                  </td>
-                  <td style={{ width: 90, paddingRight: 20, verticalAlign: 'top', paddingTop: 16 }}>
-                    <span className="badge badge-green">BUFFERED</span>
+              {sorted.length === 0 ? (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: 'center', padding: '64px 0', color: 'var(--text-tertiary)' }} className="mono">
+                    <Clock size={24} className="text-muted" style={{ margin: '0 auto 10px' }} />
+                    Queue is currently empty. Discovery engine scans every 30 seconds.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                sorted.map((item: any, idx: number) => (
+                  <tr key={item.id || idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                    <td style={{ width: 75, paddingLeft: 20, paddingRight: 10, verticalAlign: 'top', paddingTop: 16 }}>
+                      <span className={`badge ${idx === 0 ? 'badge-cyan' : idx === 1 ? 'badge-blue' : 'badge-gray'}`}>
+                        P{idx + 1}
+                      </span>
+                    </td>
+                    <td style={{ paddingLeft: 12, paddingRight: 20, verticalAlign: 'top', paddingTop: 16 }}>
+                      <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4, lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                        {item.title}
+                      </div>
+                      {item.summary && (
+                        <div className="text-secondary" style={{ fontSize: 12, lineHeight: 1.45, opacity: 0.85, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                          {item.summary.length > 110 ? `${item.summary.slice(0, 110)}...` : item.summary}
+                        </div>
+                      )}
+                    </td>
+                    <td className="mono text-accent" style={{ width: 130, paddingLeft: 12, paddingRight: 16, verticalAlign: 'top', paddingTop: 16, fontWeight: 700, whiteSpace: 'nowrap' }}>
+                      {(item.editorialScore || item.priorityScore || item.score || 86).toFixed(1)} / 100
+                    </td>
+                    <td className="text-secondary" style={{ width: 130, paddingLeft: 12, paddingRight: 16, verticalAlign: 'top', paddingTop: 16, fontSize: 13, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {item.source || 'arXiv / RSS'}
+                    </td>
+                    <td className="mono text-muted" style={{ width: 110, paddingLeft: 12, paddingRight: 16, verticalAlign: 'top', paddingTop: 16, fontSize: 12, whiteSpace: 'nowrap' }}>
+                      {item.discoveredAt ? new Date(item.discoveredAt).toLocaleTimeString() : 'Just now'}
+                    </td>
+                    <td style={{ width: 90, paddingRight: 20, verticalAlign: 'top', paddingTop: 16 }}>
+                      <span className="badge badge-green">BUFFERED</span>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
