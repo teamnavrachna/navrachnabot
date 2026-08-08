@@ -36,14 +36,11 @@ export function Sidebar({
 
   return (
     <header
+      className="glass-navbar"
       style={{
         position: 'sticky',
         top: 0,
         zIndex: 50,
-        background: 'rgba(11, 15, 20, 0.88)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.07)',
       }}
     >
       <div
