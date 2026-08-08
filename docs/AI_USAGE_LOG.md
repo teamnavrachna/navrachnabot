@@ -375,6 +375,20 @@
   * `streamlit_app.py`
 * **Implementation Notes:** Bypasses regex template parser and guarantees clean execution on Python 3.14 on Streamlit Cloud.
 
+---
+
+## Entry 31: Vercel Deployment Migration & Streamlit Removal
+
+* **Date:** 2026-08-08
+* **Goal:** Transition deployment architecture to Vercel and remove legacy `streamlit_app.py`.
+* **Prompt Summary:** Delete `streamlit_app.py` and create root `vercel.json` configuration for 1-click Vite deployment.
+* **AI Output Summary:** Removed Streamlit files and created `vercel.json` specifying Vite framework build settings and SPA rewrites.
+* **Files Modified:**
+  * `streamlit_app.py` (DELETED)
+  * `vercel.json` (CREATED)
+* **Implementation Notes:** Verified 0-error production build to `dist/` directory.
+
+
 
 
 
