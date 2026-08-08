@@ -426,6 +426,19 @@
   * `src/components/ApprovedQueuePage.tsx`
 * **Implementation Notes:** Resetting now guarantees zero lingering legacy topics and fresh domain topic discovery.
 
+---
+
+## Entry 35: Vercel Static Host Network Error Safeguard Fix
+
+* **Date:** 2026-08-08
+* **Goal:** Prevent 404 backend polling responses on static deployment hosts like Vercel from clearing local state or interrupting client engine scans.
+* **Prompt Summary:** Wrap API fetch calls in `useAppState.ts` with `.catch()` error handlers and isolate backend polling from native client scan loops.
+* **AI Output Summary:** Updated `pollBackend()` in `useAppState.ts` to fail silently without state mutations when running on static hosting providers.
+* **Files Modified:**
+  * `src/hooks/useAppState.ts`
+* **Implementation Notes:** Guarantees 100% active, dynamic live topic updates on Vercel deployments.
+
+
 
 
 

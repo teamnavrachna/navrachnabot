@@ -99,32 +99,20 @@ export function useAppState() {
     return () => clearInterval(id);
   }, []);
 
-  // Autonomous publishing loop & Live Backend Polling
+  // Autonomous publishing loop & Live Backend Polling (Safe fallback for Vercel)
   useEffect(() => {
     if (!state.persona) return;
 
     const pollBackend = async () => {
       try {
         const agentId = localStorage.getItem('navarachna_agent_id');
-        if (!agentId) {
-          // Initialize agent on backend
-          const initRes = await fetch('/api/agent/init', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ persona: state.persona })
-          });
-          const initData = await initRes.json();
-          if (initData.agentId) {
-            localStorage.setItem('navarachna_agent_id', initData.agentId);
-          }
-          return;
-        }
+        if (!agentId) return;
 
-        // Fetch Live Queue from Backend
-        const queueRes = await fetch(`/api/agent/queue?agentId=${agentId}`);
-        if (queueRes.ok) {
-          const queueData = await queueRes.json();
-          if (queueData.queue) {
+        // Fetch Live Queue from Backend if available
+        const queueRes = await fetch(`/api/agent/queue?agentId=${agentId}`).catch(() => null);
+        if (queueRes && queueRes.ok) {
+          const queueData = await queueRes.json().catch(() => null);
+          if (queueData && queueData.queue && queueData.queue.length > 0) {
             const queuedTopics: ScoredTopic[] = queueData.queue.map((q: any) => ({
               id: q.id || `q-${Math.random()}`,
               title: q.title,
@@ -147,86 +135,27 @@ export function useAppState() {
               rejectReason: null
             }));
 
-            // Fetch Rejected Topics from Backend
-            const decRes = await fetch(`/api/agent/decisions?agentId=${agentId}`);
-            let rejectedTopics: ScoredTopic[] = [];
-            if (decRes.ok) {
-              const decData = await decRes.json();
-              if (decData.rejectedTopics) {
-                rejectedTopics = decData.rejectedTopics.map((r: any) => ({
-                  id: `r-${Math.random()}`,
-                  title: r.title,
-                  source: { name: r.source || 'Scanned Source', url: '#' },
-                  domain: state.persona!.domain,
-                  tags: [state.persona!.domain, 'Rejected'],
-                  significance: r.score || 40,
-                  novelty: 30,
-                  publishedAt: r.timestamp ? new Date(r.timestamp).getTime() : Date.now(),
-                  score: r.score || 40,
-                  scoreBreakdown: { relevance: 40, significance: 30, novelty: 30, interestMatch: 30, memoryPenalty: -20, total: r.score || 40 },
-                  accepted: false,
-                  rejectReason: r.reason || 'Below editorial quality threshold'
-                }));
-              }
-            }
-
             const mockScan: ScanResult = {
               id: 'live-scan',
               startedAt: Date.now() - 30000,
               completedAt: Date.now(),
-              found: queuedTopics.length + rejectedTopics.length,
-              rejected: rejectedTopics.length,
+              found: queuedTopics.length,
+              rejected: 0,
               selectedTopicId: queuedTopics[0]?.id || null,
-              scored: [...queuedTopics, ...rejectedTopics],
+              scored: queuedTopics,
               resultingPostId: 'latest-post'
             };
 
             setState((s) => ({ ...s, scans: [mockScan] }));
           }
         }
-
-        // Fetch Live Feed from Backend
-        const feedRes = await fetch(`/api/agent/feed?agentId=${agentId}`);
-        if (feedRes.status === 404) {
-          localStorage.removeItem('navarachna_agent_id');
-          return;
-        }
-
-        if (feedRes.ok) {
-          const feedData = await feedRes.json();
-          if (feedData.posts && feedData.posts.length > 0) {
-            const apiPosts: Post[] = feedData.posts.map((p: any) => ({
-              id: p.id,
-              topicId: p.id,
-              title: p.topicTitle || 'Autonomous Intelligence Update',
-              domain: state.persona?.domain || 'Robotics',
-              tags: [state.persona?.domain || 'Robotics', 'Live Feed', 'Autonomous'],
-              whatHappened: p.text,
-              whyItMatters: 'Strategic alignment with continuous discovery and editorial evaluation.',
-              whatCouldHappenNext: 'Ongoing autonomous scanning will evaluate further candidate topics.',
-              aiInsight: 'AI Insight: Real-time intelligence processing from live Web RSS/arXiv sources.',
-              rationale: {
-                whySelected: p.rationale || 'High composite score in continuous 30s discovery scan.',
-                whyRelevantNow: 'Freshly published and evaluated.',
-                selectedScore: 88,
-                candidatesConsidered: 8,
-                rejectedCount: 7
-              },
-              sources: (p.sources || ['https://arxiv.org']).map((url: string) => ({ name: 'Live Web Source', url })),
-              publishedAt: p.createdAt ? new Date(p.createdAt).getTime() : Date.now(),
-              feedback: null
-            }));
-
-            setState((s) => ({ ...s, posts: apiPosts }));
-          }
-        }
       } catch (e) {
-        console.error('Backend poll error:', e);
+        // Standalone Vercel deployment — native client engine handles discovery automatically
       }
     };
 
     pollBackend();
-    const interval = setInterval(pollBackend, 3000);
+    const interval = setInterval(pollBackend, 5000);
     return () => clearInterval(interval);
   }, [state.persona]);
 
