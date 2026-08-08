@@ -465,6 +465,21 @@
   * `src/components/Onboarding.tsx`
 * **Implementation Notes:** Seamless layout adaptation for iOS/Android smartphones and tablets.
 
+---
+
+## Entry 38: Mobile Navigation Sub-Header Strip & Light Mode Contrast Fix
+
+* **Date:** 2026-08-08
+* **Goal:** Provide dedicated mobile sub-header navigation strip and eliminate dark background inline overrides in Light Mode.
+* **Prompt Summary:** Implement mobile sub-header tab bar in `Sidebar.tsx` and replace hardcoded dark gradients in `Dashboard.tsx` with theme variables (`var(--bg-card)`).
+* **AI Output Summary:** Added horizontal swipable mobile tab strip under header bar and updated hero card theme tokens for high-contrast light mode.
+* **Files Modified:**
+  * `src/components/Sidebar.tsx`
+  * `src/components/Dashboard.tsx`
+  * `src/index.css`
+* **Implementation Notes:** 100% visible, 1-tap mobile navigation with high-contrast frosted glass light theme styling.
+
+
 
 
 

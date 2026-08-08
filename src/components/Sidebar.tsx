@@ -45,18 +45,20 @@ export function Sidebar({
         zIndex: 50,
       }}
     >
+      {/* Main Top Header Bar */}
       <div
         style={{
           maxWidth: 1440,
           margin: '0 auto',
-          padding: '0 24px',
+          padding: '0 16px',
           height: 52,
           display: 'flex',
           alignItems: 'center',
           gap: 8,
+          justifyContent: 'space-between'
         }}
       >
-        {/* Brand — fixed width */}
+        {/* Brand */}
         <button
           onClick={() => setPage('dashboard')}
           style={{
@@ -67,9 +69,7 @@ export function Sidebar({
             background: 'none',
             border: 'none',
             cursor: 'pointer',
-            padding: '0 12px 0 0',
-            borderRight: '1px solid rgba(255,255,255,0.07)',
-            marginRight: 8,
+            padding: '0 8px 0 0',
           }}
         >
           <div
@@ -82,6 +82,7 @@ export function Sidebar({
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0,
+              boxShadow: '0 0 12px rgba(34, 211, 238, 0.4)'
             }}
           >
             <Sparkles size={14} color="white" />
@@ -89,7 +90,7 @@ export function Sidebar({
           <span
             style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: 800,
               color: 'var(--text-primary)',
               letterSpacing: '0.1em',
@@ -100,16 +101,14 @@ export function Sidebar({
           </span>
         </button>
 
-        {/* Nav tabs */}
+        {/* Desktop Nav tabs (Hidden on mobile) */}
         <nav
+          className="hidden md:flex"
           style={{
             flex: 1,
-            display: 'flex',
             alignItems: 'center',
-            gap: 2,
-            overflowX: 'auto',
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
+            gap: 4,
+            marginLeft: 12,
             padding: '4px 0',
           }}
         >
@@ -123,34 +122,28 @@ export function Sidebar({
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 5,
-                  padding: '5px 11px',
+                  gap: 6,
+                  padding: '6px 12px',
                   borderRadius: 8,
                   fontSize: 13,
                   fontWeight: active ? 600 : 500,
                   fontFamily: 'var(--font-sans)',
-                  border: active ? '1px solid rgba(255,255,255,0.10)' : '1px solid transparent',
-                  background: active ? 'rgba(255,255,255,0.07)' : 'transparent',
+                  border: active ? '1px solid var(--border-default)' : '1px solid transparent',
+                  background: active ? 'var(--bg-card)' : 'transparent',
                   color: active ? 'var(--text-primary)' : 'var(--text-muted)',
                   cursor: 'pointer',
                   transition: 'all 0.12s ease',
                   whiteSpace: 'nowrap',
                   flexShrink: 0,
-                  boxShadow: active ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
-                }}
-                onMouseEnter={(e) => {
-                  if (!active) e.currentTarget.style.color = 'var(--text-secondary)';
-                }}
-                onMouseLeave={(e) => {
-                  if (!active) e.currentTarget.style.color = 'var(--text-muted)';
+                  boxShadow: active ? 'var(--shadow-card)' : 'none',
                 }}
               >
                 <Icon
-                  size={13}
+                  size={14}
                   color={active ? 'var(--accent)' : 'currentColor'}
                   style={{ flexShrink: 0 }}
                 />
-                <span className="hidden sm:inline">{item.label}</span>
+                <span>{item.label}</span>
                 {item.id === 'queue' && queueCount > 0 && (
                   <span
                     style={{
@@ -173,38 +166,39 @@ export function Sidebar({
           })}
         </nav>
 
-        {/* Right: agent status + reset */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, paddingLeft: 8, borderLeft: '1px solid rgba(255,255,255,0.07)' }}>
+        {/* Right Controls: Status Badge + Theme Switcher + Reset */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+          {/* Status Indicator */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 7,
+              gap: 6,
               padding: '4px 10px',
               borderRadius: 8,
-              background: 'rgba(34, 197, 94, 0.07)',
-              border: '1px solid rgba(34, 197, 94, 0.18)',
+              background: 'var(--success-soft)',
+              border: '1px solid var(--success-border)',
               fontSize: 11,
               fontFamily: 'var(--font-mono)',
               whiteSpace: 'nowrap',
             }}
-            className="hidden lg:flex"
+            className="hidden sm:flex"
           >
             <span
               style={{
                 width: 7,
                 height: 7,
                 borderRadius: '50%',
-                background: '#22C55E',
+                background: 'var(--success)',
                 display: 'block',
                 flexShrink: 0,
-                boxShadow: '0 0 6px #22C55E',
+                boxShadow: '0 0 6px var(--success)',
                 animation: 'pulse-soft 2s ease-in-out infinite',
               }}
             />
-            <span style={{ color: '#22C55E', fontWeight: 600 }}>LIVE</span>
+            <span style={{ color: 'var(--success)', fontWeight: 700 }}>LIVE</span>
             <span style={{ color: 'var(--text-muted)' }}>·</span>
-            <span style={{ color: 'var(--text-tertiary)', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <span style={{ color: 'var(--text-secondary)', maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {persona.domain}
             </span>
           </div>
@@ -215,7 +209,7 @@ export function Sidebar({
               onClick={onToggleTheme}
               title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               style={{
-                height: 32,
+                height: 34,
                 padding: '0 10px',
                 display: 'flex',
                 alignItems: 'center',
@@ -223,7 +217,7 @@ export function Sidebar({
                 borderRadius: 8,
                 background: 'var(--bg-inset)',
                 border: '1px solid var(--border-default)',
-                color: 'var(--text-secondary)',
+                color: 'var(--text-primary)',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
                 fontSize: 12,
@@ -231,22 +225,22 @@ export function Sidebar({
                 fontWeight: 600,
                 flexShrink: 0,
               }}
-              className="hover:border-accent hover:text-primary"
             >
               {theme === 'light' ? (
                 <>
                   <Moon size={14} className="text-accent" />
-                  <span className="hidden sm:inline">DARK</span>
+                  <span className="hidden sm:inline" style={{ color: 'var(--text-primary)' }}>DARK</span>
                 </>
               ) : (
                 <>
                   <Sun size={14} className="text-warning" />
-                  <span className="hidden sm:inline">LIGHT</span>
+                  <span className="hidden sm:inline" style={{ color: 'var(--text-primary)' }}>LIGHT</span>
                 </>
               )}
             </button>
           )}
 
+          {/* Reset Session Button */}
           <button
             onClick={() => {
               if (window.confirm('Are you sure you want to reset the agent session? Everything will be deleted and reset to the beginning.')) {
@@ -255,8 +249,8 @@ export function Sidebar({
             }}
             title="Reset agent session"
             style={{
-              width: 32,
-              height: 32,
+              width: 34,
+              height: 34,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -268,22 +262,62 @@ export function Sidebar({
               transition: 'all 0.12s ease',
               flexShrink: 0,
             }}
-            onMouseEnter={(e) => {
-              const el = e.currentTarget;
-              el.style.color = '#EF4444';
-              el.style.background = 'rgba(239,68,68,0.1)';
-              el.style.borderColor = 'rgba(239,68,68,0.3)';
-            }}
-            onMouseLeave={(e) => {
-              const el = e.currentTarget;
-              el.style.color = 'var(--text-muted)';
-              el.style.background = 'var(--bg-inset)';
-              el.style.borderColor = 'var(--border-default)';
-            }}
           >
             <RotateCcw size={13} />
           </button>
         </div>
+      </div>
+
+      {/* Mobile Sub-Header Navigation Strip (Visible on mobile screens < 768px) */}
+      <div
+        className="flex md:hidden"
+        style={{
+          borderTop: '1px solid var(--border-subtle)',
+          padding: '6px 12px',
+          overflowX: 'auto',
+          gap: 6,
+          background: 'var(--bg-inset)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          scrollSnapType: 'x mandatory',
+          scrollbarWidth: 'none',
+        }}
+      >
+        {NAV.map((item) => {
+          const Icon = item.icon;
+          const active = page === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => setPage(item.id)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '6px 12px',
+                borderRadius: 8,
+                fontSize: 12,
+                fontFamily: 'var(--font-sans)',
+                fontWeight: active ? 700 : 500,
+                background: active ? 'var(--bg-card)' : 'transparent',
+                border: active ? '1px solid var(--accent-border)' : '1px solid transparent',
+                color: active ? 'var(--accent)' : 'var(--text-secondary)',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+                cursor: 'pointer',
+                boxShadow: active ? 'var(--glow-cyan)' : 'none',
+              }}
+            >
+              <Icon size={14} color={active ? 'var(--accent)' : 'currentColor'} />
+              <span>{item.label}</span>
+              {item.id === 'queue' && queueCount > 0 && (
+                <span className="badge badge-cyan" style={{ fontSize: 10, padding: '1px 5px' }}>
+                  {queueCount}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
     </header>
   );

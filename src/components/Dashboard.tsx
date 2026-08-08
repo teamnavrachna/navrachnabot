@@ -25,14 +25,13 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
 
       {/* ── Hero Card ── */}
       <div
+        className="card"
         style={{
-          background: 'linear-gradient(135deg, #1D2430 0%, #1A2438 100%)',
-          border: '1px solid rgba(34,211,238,0.18)',
-          borderRadius: 16,
+          background: 'var(--bg-card)',
+          borderColor: 'var(--accent-border)',
           padding: 28,
           position: 'relative',
           overflow: 'hidden',
-          boxShadow: '0 0 40px -12px rgba(34,211,238,0.12), 0 4px 16px rgba(0,0,0,0.3)',
         }}
       >
         <div style={{ position: 'absolute', top: -60, right: -60, width: 280, height: 280, background: 'radial-gradient(circle, rgba(34,211,238,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
