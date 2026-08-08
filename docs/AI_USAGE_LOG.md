@@ -202,6 +202,19 @@
   * `src/components/Dashboard.tsx`
 * **Implementation Notes:** Scheduler badge now shows configured interval (e.g. `ACTIVE · 30s`, `ACTIVE · 1m`, `ACTIVE · 5m`).
 
+---
+
+## Entry 17: Settings UI Outlined Buttons & Micro-Animation Redesign
+
+* **Date:** 2026-08-08
+* **Goal:** Redesign PersonaSettings UI with crisp button outlines, active glowing borders, hover micro-animations, and slide-up entrance transitions.
+* **Prompt Summary:** Add prominent button card outlines to Writing Voice & Tone and Domain Focus Area grids along with hover state animations.
+* **AI Output Summary:** Redesigned `PersonaSettings.tsx` with framed button cards, glowing borders (`border-accent`), hover translateY(-2px), radio/checkmark indicators, and animated section entrances (`animate-slide-up`).
+* **Files Modified:**
+  * `src/components/PersonaSettings.tsx`
+* **Implementation Notes:** All setting options now feature clear active badges, hover scale effects, and distinct selection borders.
+
+
 
 
 
