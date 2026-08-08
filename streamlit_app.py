@@ -2,7 +2,6 @@ import streamlit as st
 import streamlit.components.v1 as components
 import os
 import glob
-import re
 
 # Streamlit Page Configuration
 st.set_page_config(
@@ -58,9 +57,16 @@ def load_standalone_html():
         with open(js_file, "r", encoding="utf-8") as f:
             js_code += f.read() + "\n"
 
-    # Inline CSS and JS into self-contained HTML bundle
-    html_content = re.sub(r'<link rel="stylesheet"[^>]*>', f'<style>\n{css_code}\n</style>', html_content)
-    html_content = re.sub(r'<script type="module"[^>]*></script>', f'<script type="module">\n{js_code}\n</script>', html_content)
+    # Safely inject CSS and JS using string replacement to avoid regex escape errors
+    if "</head>" in html_content:
+        html_content = html_content.replace("</head>", f"<style>\n{css_code}\n</style>\n</head>")
+    else:
+        html_content = f"<style>\n{css_code}\n</style>\n" + html_content
+
+    if "</body>" in html_content:
+        html_content = html_content.replace("</body>", f"<script type=\"module\">\n{js_code}\n</script>\n</body>")
+    else:
+        html_content = html_content + f"\n<script type=\"module\">\n{js_code}\n</script>"
 
     return html_content
 

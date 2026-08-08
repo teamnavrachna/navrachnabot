@@ -363,6 +363,19 @@
   * `streamlit_app.py`
 * **Implementation Notes:** Verified HTTP 200 execution on Streamlit server port 8501.
 
+---
+
+## Entry 30: Streamlit Regex Escape Fix (re.PatternError Resolution)
+
+* **Date:** 2026-08-08
+* **Goal:** Fix `re.PatternError: bad escape` caused by Python regex processing minified JS code containing backslashes.
+* **Prompt Summary:** Replace `re.sub` replacement with safe native string `.replace()` in `streamlit_app.py`.
+* **AI Output Summary:** Updated HTML bundle injector in `streamlit_app.py` to use `.replace('</head>', ...)` and `.replace('</body>', ...)`.
+* **Files Modified:**
+  * `streamlit_app.py`
+* **Implementation Notes:** Bypasses regex template parser and guarantees clean execution on Python 3.14 on Streamlit Cloud.
+
+
 
 
 
