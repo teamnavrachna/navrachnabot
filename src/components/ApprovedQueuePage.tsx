@@ -31,13 +31,28 @@ export function ApprovedQueuePage({ ctrl }: { ctrl: AppController }) {
   const backendItems = queueData?.queue || [];
   let displayQueue: any[] = backendItems;
 
-  if (displayQueue.length === 0 && state.scans.length > 0) {
-    const acceptedFromScans = state.scans[0]?.scored?.filter((s: any) => s.accepted) || [];
+  if (state.approvedQueue && state.approvedQueue.length > 0) {
+    displayQueue = state.approvedQueue.map((s: any, idx: number) => ({
+      id: s.id || `q-${idx}`,
+      title: s.title,
+      summary: s.summary || s.tags?.join(' • ') || 'Autonomous intelligence topic candidate.',
+      source: s.source?.name || 'arXiv / RSS',
+      sourceUrl: s.source?.url || 'https://arxiv.org',
+      editorialScore: s.score || 86,
+      priorityScore: s.significance || 88,
+      discoveredAt: new Date(s.publishedAt || Date.now()).toISOString(),
+      status: 'QUEUED'
+    }));
+  } else if (displayQueue.length === 0 && state.scans.length > 0) {
+    const acceptedFromScans = state.scans
+      .flatMap((sc: any) => sc.scored || [])
+      .filter((s: any) => s.accepted && !state.memory.coveredTopicIds.includes(s.id));
     displayQueue = acceptedFromScans.map((s: any, idx: number) => ({
       id: s.id || `q-${idx}`,
       title: s.title,
       summary: s.summary || s.tags?.join(' • ') || 'Autonomous intelligence topic candidate.',
       source: s.source?.name || 'arXiv / RSS',
+      sourceUrl: s.source?.url || 'https://arxiv.org',
       editorialScore: s.score || 86,
       priorityScore: s.significance || 88,
       discoveredAt: new Date(s.publishedAt || Date.now()).toISOString(),

@@ -25,6 +25,13 @@ async def lifespan(app: FastAPI):
     # Startup: Create tables
     logger.info("Initializing database tables...")
     Base.metadata.create_all(bind=engine)
+    with engine.connect() as conn:
+        try:
+            from sqlalchemy import text
+            conn.execute(text("ALTER TABLE agents ADD COLUMN score_threshold FLOAT DEFAULT 75.0;"))
+            conn.commit()
+        except Exception:
+            pass
 
     # Start APScheduler (Continuous Discovery Engine - 30s interval)
     logger.info("Starting Engine 1: Continuous Discovery Engine with 30-second interval...")

@@ -42,12 +42,61 @@ function interestBoost(tags: string[], profile: Record<string, number>): number 
   return Math.max(-15, Math.min(20, avg * 10));
 }
 
+// ---------- Dynamic Topic Generator ----------
+
+const DYNAMIC_TOPIC_TEMPLATES: Record<Domain, Array<{ title: string; source: Source; tags: string[]; significance: number; novelty: number }>> = {
+  'AI Security': [
+    { title: 'Zero-Knowledge Guardrails Prevent Data Exfiltration in Tool-Calling LLMs', source: { name: 'arXiv', url: 'https://arxiv.org/abs/2503.01' }, tags: ['Model Safety', 'LLMs', 'AI Agents'], significance: 94, novelty: 91 },
+    { title: 'Mechanistic Interpretability Detects Hidden Backdoors Prior to Model Deployment', source: { name: 'Anthropic', url: 'https://anthropic.com/interpretability-2025' }, tags: ['Model Safety', 'Enterprise AI'], significance: 91, novelty: 88 },
+    { title: 'Formal Verification Framework Certifies Safety Boundaries for Autonomous Systems', source: { name: 'MIT Tech Review', url: 'https://technologyreview.com/formal-verification' }, tags: ['Model Safety', 'AI Agents'], significance: 89, novelty: 86 },
+    { title: 'Adversarial Robustness Benchmark Exposes Vulnerabilities in Multimodal RAG', source: { name: 'Papers With Code', url: 'https://paperswithcode.com/paper/multimodal-rag-defense' }, tags: ['Model Safety', 'Multimodal Models'], significance: 88, novelty: 84 },
+  ],
+  'Machine Learning': [
+    { title: 'Test-Time Compute Scaling Beats Larger Models on Complex Mathematical Reasoning', source: { name: 'OpenAI', url: 'https://openai.com/blog/test-time-compute' }, tags: ['LLMs', 'Reinforcement Learning'], significance: 96, novelty: 95 },
+    { title: 'Sub-Byte Quantization Achieves 4-Bit Fidelity at 1.5-Bit Memory Footprint', source: { name: 'Hugging Face', url: 'https://huggingface.co/blog/sub-byte-quant' }, tags: ['LLMs', 'AI Hardware', 'Edge AI'], significance: 93, novelty: 92 },
+    { title: 'Direct Preference Optimization Over Long Context Windows Replaces Traditional RLHF', source: { name: 'arXiv', url: 'https://arxiv.org/abs/2503.04' }, tags: ['LLMs', 'Reinforcement Learning'], significance: 90, novelty: 89 },
+    { title: 'Linear-Time State Space Architectures Outperform Transformers on 100M-Token Sequences', source: { name: 'DeepMind', url: 'https://deepmind.google/state-space-models' }, tags: ['LLMs', 'AI Research'], significance: 94, novelty: 93 },
+  ],
+  'Robotics': [
+    { title: 'Unified Spatial Vision-Language-Action Policy Executes 500 Complex Household Tasks', source: { name: 'DeepMind', url: 'https://deepmind.google/vla-v2' }, tags: ['Robot Learning', 'AI Agents', 'Multimodal Models'], significance: 95, novelty: 94 },
+    { title: 'Sim-to-Real RL Policy Achieves Millimeter-Precision Manipulation Without Fine-Tuning', source: { name: 'Papers With Code', url: 'https://paperswithcode.com/paper/sim2real-precision' }, tags: ['Robot Learning', 'Reinforcement Learning'], significance: 92, novelty: 89 },
+    { title: 'Autonomous Humanoid Fleet Deployed in Commercial Warehouse Assembly Line', source: { name: 'MIT Tech Review', url: 'https://technologyreview.com/humanoid-deployment' }, tags: ['Robot Learning', 'AI Hardware'], significance: 91, novelty: 87 },
+  ],
+  'AI Products': [
+    { title: 'Autonomous Multi-Agent Engineering Environment Passes Complex Full-Stack Benchmarks', source: { name: 'Hugging Face', url: 'https://huggingface.co/blog/agent-coder-2025' }, tags: ['AI Agents', 'AI Coding Tools', 'Enterprise AI'], significance: 95, novelty: 92 },
+    { title: 'Local Edge-AI Copilot Delivers Instant Zero-Latency Code Completion', source: { name: 'AI Index Report', url: 'https://aiindex.stanford.edu/edge-copilot' }, tags: ['AI Coding Tools', 'Edge AI', 'LLMs'], significance: 90, novelty: 88 },
+  ],
+  'AI Research': [
+    { title: 'Emergent Reasoning Dynamics in Recursive Self-Correction Networks Revealed', source: { name: 'arXiv', url: 'https://arxiv.org/abs/2503.09' }, tags: ['LLMs', 'AI Research', 'Reinforcement Learning'], significance: 97, novelty: 96 },
+    { title: 'Generative Physics Engine Predicts Complex Fluid and Particle Dynamics in Real-Time', source: { name: 'DeepMind', url: 'https://deepmind.google/physics-engine' }, tags: ['Generative AI', 'Multimodal Models'], significance: 94, novelty: 92 },
+  ],
+  'AI Ethics & Policy': [
+    { title: 'Global AI Safety Institute Establishes Standardized Red-Teaming Audits for Frontier Models', source: { name: 'AI Index Report', url: 'https://aiindex.stanford.edu/red-teaming-standard' }, tags: ['AI Regulation', 'Model Safety', 'Enterprise AI'], significance: 93, novelty: 90 },
+    { title: 'Open Source Model Licensing Framework Adopted by Major Tech Consortium', source: { name: 'MIT Tech Review', url: 'https://technologyreview.com/open-licensing' }, tags: ['AI Regulation', 'Open Source AI'], significance: 89, novelty: 87 },
+  ],
+};
+
 // ---------- Discovery ----------
 
 export function discoverTopics(persona: Persona): RawTopic[] {
+  const now = Date.now();
   const domainMatch = TOPIC_POOL.filter((tp) => tp.domain === persona.domain);
   const crossDomain = TOPIC_POOL.filter((tp) => tp.domain !== persona.domain);
-  const pool = [...domainMatch, ...pick(crossDomain, 6)];
+
+  // Generate continuous synthetic candidate topics if domain pool is small
+  const templates = DYNAMIC_TOPIC_TEMPLATES[persona.domain] || DYNAMIC_TOPIC_TEMPLATES['Machine Learning'];
+  const dynamicTopics: RawTopic[] = templates.map((tmpl, idx) => ({
+    id: `dyn-${persona.domain.toLowerCase().replace(/[^a-z]/g, '')}-${idx}-${now % 10000}`,
+    title: tmpl.title,
+    source: tmpl.source,
+    domain: persona.domain,
+    tags: tmpl.tags,
+    significance: tmpl.significance,
+    novelty: tmpl.novelty,
+    publishedAt: now - (idx + 1) * 3600_000,
+  }));
+
+  const pool = [...domainMatch, ...dynamicTopics, ...pick(crossDomain, 4)];
   return pick(pool, Math.min(12, pool.length)).sort((a, b) => b.publishedAt - a.publishedAt);
 }
 
@@ -148,19 +197,28 @@ export function runScan(state: AppState): { result: ScanResult; post: Post | nul
   const startedAt = Date.now();
   const discovered = discoverTopics(state.persona);
   const scored = discovered.map((tp) => scoreTopic(tp, state));
-  const accepted = scored.filter((s) => s.accepted).sort((a, b) => b.score - a.score);
-  let best = accepted[0] ?? null;
 
-  // Fallback to queue: If current scan batch yielded no new approved topics, check previous accepted topics that haven't been published yet
-  if (!best) {
-    const previousAccepted = state.scans
-      .flatMap((s) => s.scored)
-      .filter((s) => s.accepted && !state.memory.coveredTopicIds.includes(s.id))
-      .sort((a, b) => b.score - a.score);
-    if (previousAccepted.length > 0) {
-      best = previousAccepted[0];
+  // Newly accepted topics in current scan batch
+  const newlyAccepted = scored.filter(
+    (s) => s.accepted && !state.memory.coveredTopicIds.includes(s.id)
+  );
+
+  // Combine newly accepted with existing approved queue
+  const currentQueue = state.approvedQueue || [];
+  const combinedQueue = [...currentQueue, ...newlyAccepted];
+
+  // Deduplicate and filter out covered topics
+  const queueMap = new Map<string, ScoredTopic>();
+  for (const item of combinedQueue) {
+    if (!state.memory.coveredTopicIds.includes(item.id)) {
+      queueMap.set(item.id, item);
     }
   }
+  const sortedQueue = Array.from(queueMap.values()).sort((a, b) => b.score - a.score);
+
+  // Top candidate to publish
+  const best = sortedQueue[0] ?? null;
+  const remainingQueue = sortedQueue.slice(best ? 1 : 0);
 
   let post: Post | null = null;
   let memory: Memory = state.memory;
@@ -213,6 +271,7 @@ export function runScan(state: AppState): { result: ScanResult; post: Post | nul
     newState: {
       ...state,
       posts,
+      approvedQueue: remainingQueue,
       memory,
       interestProfile,
       scans: [result, ...state.scans],
@@ -276,6 +335,7 @@ export function initialState(): AppState {
     persona: null,
     posts: [],
     scans: [],
+    approvedQueue: [],
     memory: { coveredTopicIds: [], coveredTagCounts: {}, avoidedTopicIds: [], feedbackWeights: {} },
     lastScanAt: null,
     nextScanAt: Date.now() + 8000,

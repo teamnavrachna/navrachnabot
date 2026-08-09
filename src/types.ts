@@ -95,6 +95,7 @@ export type AppState = {
   persona: Persona | null;
   posts: Post[];
   scans: ScanResult[];
+  approvedQueue: ScoredTopic[];
   memory: Memory;
   lastScanAt: number | null;
   nextScanAt: number;
