@@ -528,6 +528,51 @@ Major production upgrade transforming Navarachna into a fully auditable autonomo
 - app/schemas/schemas.py
 - docs/SUBMISSION_REPORT.md (new)
 
+---
+
+## Entry 40: Dynamic Threshold Enforcement & Score Calibration
+
+* **Date:** 2026-08-09
+* **Goal:** Enforce dynamic editorial score threshold across frontend and backend, calibrate 0-100 topic scoring formula, and implement pipeline queue auto-dequeue fallback on 30s timer.
+* **Prompt Summary:** Resolve issue where topics below 85 points appeared on feed when threshold slider was set to 85, and fix approved queue topics not automatically publishing when 30s timer hits zero.
+* **AI Output Summary:** Updated `getAcceptThreshold()` in `engine.ts` to read `navrachna_signal_score_threshold` from `localStorage`, calibrated scoring multipliers (0-100 scale), added `score_threshold` column to `Agent` DB model and schema, updated backend `EditorialEngine.evaluate_topic` to enforce dynamic threshold, and updated `runScan()` to pull top candidate from approved queue when current discovery scan batch yields 0 accepted candidates.
+* **Files Modified:**
+  * `src/lib/engine.ts`
+  * `app/db/models.py`
+  * `app/schemas/schemas.py`
+  * `app/services/editorial.py`
+  * `app/services/scheduler_tasks.py`
+  * `app/api/endpoints.py`
+* **Implementation Notes:** Ensures strict quality gate filtering and automatic publishing of approved queued items every 30 seconds.
+
+---
+
+## Entry 41: Platform Brand Name Update (Navrachna)
+
+* **Date:** 2026-08-09
+* **Goal:** Update all occurrences of platform brand name from "Navarachna" to "Navrachna".
+* **Prompt Summary:** Rename platform title, headers, logo text, database filenames, API descriptions, and localStorage keys across the entire web application codebase.
+* **AI Output Summary:** Replaced all occurrences of "Navarachna" / "navarachna" with "Navrachna" / "navrachna" across frontend React components, index.html, CSS variables, backend settings, database defaults, and documentation.
+* **Files Modified:**
+  * `index.html`
+  * `README.md`
+  * `app/core/config.py`
+  * `app/main.py`
+  * `app/db/models.py`
+  * `app/schemas/schemas.py`
+  * `app/api/endpoints.py`
+  * `app/services/social_publisher.py`
+  * `src/App.tsx`
+  * `src/components/Sidebar.tsx`
+  * `src/components/Dashboard.tsx`
+  * `src/components/Onboarding.tsx`
+  * `src/components/PersonaSettings.tsx`
+  * `src/components/ActivityStreamPage.tsx`
+  * `src/components/ApprovedQueuePage.tsx`
+  * `src/components/Feed.tsx`
+  * `src/hooks/useAppState.ts`
+  * `src/lib/engine.ts`
+* **Implementation Notes:** Verified 0-error TypeScript build and clean FastAPI startup under updated brand name.
 
 
 

@@ -149,7 +149,18 @@ export function runScan(state: AppState): { result: ScanResult; post: Post | nul
   const discovered = discoverTopics(state.persona);
   const scored = discovered.map((tp) => scoreTopic(tp, state));
   const accepted = scored.filter((s) => s.accepted).sort((a, b) => b.score - a.score);
-  const best = accepted[0] ?? null;
+  let best = accepted[0] ?? null;
+
+  // Fallback to queue: If current scan batch yielded no new approved topics, check previous accepted topics that haven't been published yet
+  if (!best) {
+    const previousAccepted = state.scans
+      .flatMap((s) => s.scored)
+      .filter((s) => s.accepted && !state.memory.coveredTopicIds.includes(s.id))
+      .sort((a, b) => b.score - a.score);
+    if (previousAccepted.length > 0) {
+      best = previousAccepted[0];
+    }
+  }
 
   let post: Post | null = null;
   let memory: Memory = state.memory;
