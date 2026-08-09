@@ -135,7 +135,7 @@ export function ActivityStreamPage({ ctrl }: { ctrl: AppController }) {
               fontSize: 12,
               padding: '6px 14px',
               borderRadius: 8,
-              border: filter === f ? '1px solid var(--accent)' : '1px solid rgba(255,255,255,0.08)',
+              border: filter === f ? '1px solid var(--accent)' : '1px solid var(--border-subtle)',
               background: filter === f ? 'var(--accent-soft)' : 'var(--bg-inset)',
               color: filter === f ? 'var(--accent)' : 'var(--text-secondary)',
               transition: 'all 0.15s ease'
@@ -147,8 +147,8 @@ export function ActivityStreamPage({ ctrl }: { ctrl: AppController }) {
       </div>
 
       {/* Terminal Container */}
-      <div className="card animate-slide-up" style={{ padding: 24, background: 'var(--bg-inset)', minHeight: 480, borderRadius: 16, border: '1px solid rgba(255,255,255,0.08)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 14, marginBottom: 20 }}>
+      <div className="card animate-slide-up" style={{ padding: 24, background: 'var(--bg-inset)', minHeight: 480, borderRadius: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 14, marginBottom: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <TerminalIcon size={16} className="text-accent" />
             <span className="t-caption text-accent font-bold" style={{ letterSpacing: '0.05em' }}>
@@ -182,7 +182,7 @@ export function ActivityStreamPage({ ctrl }: { ctrl: AppController }) {
                     padding: '14px 16px',
                     background: 'var(--bg-card)',
                     borderRadius: 12,
-                    border: '1px solid rgba(255,255,255,0.07)',
+                    border: '1px solid var(--border-subtle)',
                     transition: 'all 0.15s ease'
                   }}
                   className="hover:border-accent"

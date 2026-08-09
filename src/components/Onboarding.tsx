@@ -63,14 +63,14 @@ export function Onboarding({ onCreate }: { onCreate: (p: Persona) => void }) {
           </p>
         </div>
 
-        <div style={{ background:'var(--bg-card)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:20, boxShadow:'0 24px 48px rgba(0,0,0,0.4)', overflow:'hidden' }} className="animate-slide-up">
+        <div style={{ background:'var(--bg-card)', border:'1px solid var(--border-default)', borderRadius:20, boxShadow:'var(--shadow-card)', overflow:'hidden' }} className="animate-slide-up">
           {/* Progress steps */}
           <div style={{ display:'flex', alignItems:'center', gap:8, padding:'20px 28px 0' }}>
             {STEP_LABELS.map((label, i) => (
               <div key={label} style={{ flex:1, display:'flex', alignItems:'center', gap:6 }}>
-                <div style={{ height:3, flex:1, borderRadius:9999, background: i <= step ? 'var(--accent)' : 'rgba(255,255,255,0.08)', transition:'background 0.4s' }} />
+                <div style={{ height:3, flex:1, borderRadius:9999, background: i <= step ? 'var(--accent)' : 'var(--border-subtle)', transition:'background 0.4s' }} />
                 <span style={{ fontSize:10, fontWeight:600, fontFamily:'var(--font-mono)', whiteSpace:'nowrap', color: i <= step ? 'var(--accent)' : 'var(--text-muted)', letterSpacing:'0.06em', textTransform:'uppercase' }}>{label}</span>
-                {i < STEP_LABELS.length - 1 && <div style={{ height:3, flex:1, borderRadius:9999, background: i < step ? 'var(--accent)' : 'rgba(255,255,255,0.08)', transition:'background 0.4s' }} />}
+                {i < STEP_LABELS.length - 1 && <div style={{ height:3, flex:1, borderRadius:9999, background: i < step ? 'var(--accent)' : 'var(--border-subtle)', transition:'background 0.4s' }} />}
               </div>
             ))}
           </div>

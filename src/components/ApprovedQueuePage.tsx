@@ -88,8 +88,8 @@ export function ApprovedQueuePage({ ctrl }: { ctrl: AppController }) {
       </div>
 
       {/* Main Data Table Card */}
-      <div className="card animate-slide-up" style={{ padding: 0, overflow: 'hidden', borderRadius: 16, border: '1px solid rgba(255,255,255,0.08)' }}>
-        <div style={{ padding: '18px 24px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(22, 27, 34, 0.50)' }}>
+      <div className="card animate-slide-up" style={{ padding: 0, overflow: 'hidden', borderRadius: 16 }}>
+        <div style={{ padding: '18px 24px', borderBottom: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-inset)' }}>
           <span className="t-label text-primary" style={{ fontWeight: 700, letterSpacing: '0.04em' }}>Active Priority Queue</span>
           <span className="badge badge-cyan mono" style={{ padding: '4px 10px', fontSize: 12 }}>{sorted.length} Approved Items</span>
         </div>
@@ -105,7 +105,7 @@ export function ApprovedQueuePage({ ctrl }: { ctrl: AppController }) {
               <col style={{ width: '90px' }} />
             </colgroup>
             <thead>
-              <tr style={{ background: 'rgba(22, 27, 34, 0.80)' }}>
+              <tr style={{ background: 'var(--bg-inset)' }}>
                 <th style={{ width: 75, paddingLeft: 20, paddingRight: 10 }}>Priority</th>
                 <th style={{ paddingLeft: 12, paddingRight: 20 }}>Topic Headline &amp; Context</th>
                 <th style={{ width: 130, paddingLeft: 12, paddingRight: 16, whiteSpace: 'nowrap' }}>Signal Score</th>
@@ -124,7 +124,7 @@ export function ApprovedQueuePage({ ctrl }: { ctrl: AppController }) {
                 </tr>
               ) : (
                 sorted.map((item: any, idx: number) => (
-                  <tr key={item.id || idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <tr key={item.id || idx} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                     <td style={{ width: 75, paddingLeft: 20, paddingRight: 10, verticalAlign: 'top', paddingTop: 16 }}>
                       <span className={`badge ${idx === 0 ? 'badge-cyan' : idx === 1 ? 'badge-blue' : 'badge-gray'}`}>
                         P{idx + 1}
@@ -168,7 +168,7 @@ function PipelineStat({ label, value, icon: Icon, color }: { label: string; valu
     <div className="card card-hover" style={{ padding: 22 }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
         <span className="t-caption" style={{ fontWeight: 600 }}>{label}</span>
-        <div style={{ padding: 7, borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ padding: 7, borderRadius: 8, background: 'var(--bg-inset)', border: '1px solid var(--border-subtle)' }}>
           <Icon size={16} color={color} />
         </div>
       </div>

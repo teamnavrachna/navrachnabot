@@ -32,7 +32,7 @@ function formatExecutiveBody(text: string) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 28 }}>
       {sections.map((sec, idx) => (
-        <div key={idx} style={{ background: 'var(--bg-inset)', padding: '16px 20px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.06)' }}>
+        <div key={idx} style={{ background: 'var(--bg-inset)', padding: '16px 20px', borderRadius: 12, border: '1px solid var(--border-subtle)' }}>
           <div style={{ fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
             {sec.title}
           </div>
@@ -173,14 +173,14 @@ export function Feed({ ctrl }: { ctrl: AppController }) {
           </div>
 
           {/* Redesigned System Editorial Audit Box */}
-          <div style={{ background: 'var(--bg-inset)', padding: 24, borderRadius: 16, border: '1px solid rgba(255,255,255,0.08)', marginBottom: 28 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, paddingBottom: 12, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+          <div style={{ background: 'var(--bg-inset)', padding: 24, borderRadius: 16, border: '1px solid var(--border-subtle)', marginBottom: 28 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, paddingBottom: 12, borderBottom: '1px solid var(--border-subtle)' }}>
               <Shield size={16} className="c-accent" />
               <span className="t-label c-accent" style={{ letterSpacing: '0.06em', fontWeight: 700 }}>SYSTEM EDITORIAL AUDIT</span>
             </div>
 
             {/* Why Selected — Full Width Hero Block */}
-            <div style={{ background: 'var(--bg-card)', padding: 20, borderRadius: 12, borderLeft: '3.5px solid var(--accent)', border: '1px solid rgba(255,255,255,0.07)', marginBottom: 16 }}>
+            <div style={{ background: 'var(--bg-card)', padding: 20, borderRadius: 12, borderLeft: '3.5px solid var(--accent)', border: '1px solid var(--border-subtle)', marginBottom: 16 }}>
               <div className="t-caption c-accent" style={{ fontWeight: 700, marginBottom: 8, letterSpacing: '0.05em' }}>WHY THIS TOPIC WAS SELECTED</div>
               <div style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, fontFamily: 'var(--font-sans)' }}>
                 {activePost.rationale.whySelected}
@@ -189,15 +189,15 @@ export function Feed({ ctrl }: { ctrl: AppController }) {
 
             {/* 3-Column Metrics Row */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
-              <div style={{ background: 'var(--bg-card)', padding: '16px 18px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div style={{ background: 'var(--bg-card)', padding: '16px 18px', borderRadius: 12, border: '1px solid var(--border-subtle)' }}>
                 <div className="t-caption c-tertiary" style={{ fontSize: 11, marginBottom: 4, fontWeight: 600 }}>RECENCY CONTEXT</div>
                 <div className="t-meta c-primary" style={{ fontWeight: 600, fontSize: 13 }}>{activePost.rationale.whyRelevantNow}</div>
               </div>
-              <div style={{ background: 'var(--bg-card)', padding: '16px 18px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div style={{ background: 'var(--bg-card)', padding: '16px 18px', borderRadius: 12, border: '1px solid var(--border-subtle)' }}>
                 <div className="t-caption c-tertiary" style={{ fontSize: 11, marginBottom: 4, fontWeight: 600 }}>CANDIDATES EVALUATED</div>
                 <div className="t-meta c-primary" style={{ fontWeight: 600, fontSize: 13 }}>{activePost.rationale.candidatesConsidered} candidate topics</div>
               </div>
-              <div style={{ background: 'var(--bg-card)', padding: '16px 18px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.06)' }}>
+              <div style={{ background: 'var(--bg-card)', padding: '16px 18px', borderRadius: 12, border: '1px solid var(--border-subtle)' }}>
                 <div className="t-caption c-tertiary" style={{ fontSize: 11, marginBottom: 4, fontWeight: 600 }}>FILTERED CANDIDATES</div>
                 <div className="t-meta c-primary" style={{ fontWeight: 600, fontSize: 13 }}>{activePost.rationale.rejectedCount} below threshold</div>
               </div>

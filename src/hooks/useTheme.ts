@@ -8,9 +8,9 @@ export function useTheme() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY) as Theme | null;
       if (saved === 'dark' || saved === 'light') return saved;
-      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      return 'light';
     } catch {
-      return 'dark';
+      return 'light';
     }
   });
 

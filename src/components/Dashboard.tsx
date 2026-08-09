@@ -81,10 +81,10 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
       <div
         style={{
           background: 'var(--bg-card)',
-          border: '1px solid rgba(255,255,255,0.07)',
+          border: '1px solid var(--border-subtle)',
           borderRadius: 16,
           padding: '20px 24px',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
+          boxShadow: 'var(--shadow-card)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
@@ -126,7 +126,7 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
         {/* Autonomy Status */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: 24, boxShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 16, padding: 24, boxShadow: 'var(--shadow-card)' }}>
           <SectionHead icon={Shield} title="Autonomy Status" accent="var(--accent)" />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 16 }}>
             {(() => {
@@ -144,7 +144,7 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
                 { label: 'Memory', value: `${memoryRecords} Records`, color: 'var(--text-secondary)' },
                 { label: 'Health', value: '99.8%', color: '#22C55E' },
               ].map(({ label, value, color }) => (
-                <div key={label} style={{ background: 'var(--bg-inset)', borderRadius: 10, padding: '10px 12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div key={label} style={{ background: 'var(--bg-inset)', borderRadius: 10, padding: '10px 12px', border: '1px solid var(--border-subtle)' }}>
                   <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 3 }}>{label}</div>
                   <div style={{ fontSize: 12, fontWeight: 600, color, fontFamily: 'var(--font-mono)' }}>{value}</div>
                 </div>
@@ -154,13 +154,13 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
         </div>
 
         {/* Activity Stream */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: 24, boxShadow: '0 1px 3px rgba(0,0,0,0.3)' }}>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 16, padding: 24, boxShadow: 'var(--shadow-card)' }}>
           <SectionHead icon={TerminalIcon} title="Live Activity Stream" accent="var(--accent)" />
           <div
             style={{
               marginTop: 16,
               background: 'var(--bg-inset)',
-              border: '1px solid rgba(255,255,255,0.05)',
+              border: '1px solid var(--border-subtle)',
               borderRadius: 10,
               padding: 14,
               fontFamily: 'var(--font-mono)',
@@ -186,13 +186,13 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
       <div
         style={{
           background: 'var(--bg-card)',
-          border: '1px solid rgba(34,211,238,0.14)',
+          border: '1px solid var(--accent-border)',
           borderRadius: 16,
           padding: 28,
-          boxShadow: '0 0 24px -8px rgba(34,211,238,0.08), 0 1px 3px rgba(0,0,0,0.3)',
+          boxShadow: 'var(--shadow-card)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid rgba(255,255,255,0.06)', flexWrap: 'wrap', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid var(--border-subtle)', flexWrap: 'wrap', gap: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Sparkles size={16} color="var(--accent)" />
             <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>Latest Published Intelligence</span>
@@ -216,7 +216,7 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
                 { label: 'Why It Matters', color: 'var(--highlight)', text: latestPost.whyItMatters },
                 { label: 'Key Takeaway', color: '#22C55E', text: latestPost.whatCouldHappenNext },
               ].map(({ label, color, text }) => (
-                <div key={label} style={{ background: 'var(--bg-inset)', borderRadius: 12, padding: 16, border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div key={label} style={{ background: 'var(--bg-inset)', borderRadius: 12, padding: 16, border: '1px solid var(--border-subtle)' }}>
                   <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>{label}</div>
                   <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65 }} className="line-clamp-4">{text}</p>
                 </div>
@@ -239,10 +239,10 @@ function KpiCard({ title, value, icon: Icon, accent, note }: { title: string; va
     <div
       style={{
         background: 'var(--bg-card)',
-        border: '1px solid rgba(255,255,255,0.07)',
+        border: '1px solid var(--border-subtle)',
         borderRadius: 16,
         padding: 24,
-        boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
+        boxShadow: 'var(--shadow-card)',
         display: 'flex',
         flexDirection: 'column',
         gap: 12,
@@ -251,7 +251,7 @@ function KpiCard({ title, value, icon: Icon, accent, note }: { title: string; va
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>{title}</span>
-        <div style={{ padding: 7, borderRadius: 9, background: 'var(--bg-inset)', border: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ padding: 7, borderRadius: 9, background: 'var(--bg-inset)', border: '1px solid var(--border-subtle)' }}>
           <Icon size={14} color={accent} />
         </div>
       </div>

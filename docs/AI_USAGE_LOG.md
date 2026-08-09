@@ -479,6 +479,56 @@
   * `src/index.css`
 * **Implementation Notes:** 100% visible, 1-tap mobile navigation with high-contrast frosted glass light theme styling.
 
+---
+
+## Entry 39: Default Light Mode & Pipeline Data Table Header Theme Fix
+
+* **Date:** 2026-08-08
+* **Goal:** Set Light Mode as the default initial theme and replace hardcoded dark grey inline background styles in table cards with theme variables.
+* **Prompt Summary:** Update `useTheme.ts` to default to `'light'` and replace hardcoded dark inline styles in `ApprovedQueuePage.tsx`, `ActivityStreamPage.tsx`, and `Dashboard.tsx` with `var(--bg-inset)` and `var(--border-subtle)`.
+* **AI Output Summary:** Configured default Light Mode and flushes all dark inline background artifacts across all sub-pages.
+* **Files Modified:**
+  * `src/hooks/useTheme.ts`
+  * `src/components/ApprovedQueuePage.tsx`
+  * `src/components/ActivityStreamPage.tsx`
+  * `src/components/Dashboard.tsx`
+* **Implementation Notes:** Ultra-clean light slate presentation with zero dark background artifacts.
+
+---
+
+## Session: Production Upgrade — 2026-08-09
+
+### Summary
+Major production upgrade transforming Navarachna into a fully auditable autonomous intelligence platform.
+
+### Changes Implemented
+- Expanded database schema with 6 new tables (RejectedTopicRecord, DiscoveryCycleStats, AutonomyProof, DiversityTracker, SystemHealthLog)
+- Enriched Evaluation model with confidence_score, confidence_level, source_credibility_score, memory_similarity_score, decision timeline fields
+- New Source Credibility Registry (credibility.py) with 40+ sources rated 40-98
+- Memory Engine upgraded with Jaccard similarity (0.45 threshold), diversity penalty computation
+- Editorial Engine rewritten: integrates credibility, memory similarity, diversity penalty, confidence scoring, quality gates
+- Scheduler rewritten: per-source failure isolation, cycle statistics, autonomy proof updates, full decision timeline
+- New API endpoints: /audit (judge dashboard), /explain (explainability), /rejected (rejected topics)
+- Feed enriched with editorialScore, confidenceScore, confidenceLevel, scoreBreakdown
+- Pydantic schemas updated for new feed fields
+- Activity Logger updated to use flush() for proper transaction control
+
+### AI Tools Used
+- Antigravity (Google DeepMind) — full implementation
+- Model: Claude Sonnet 4.6
+
+### Files Modified
+- app/db/models.py
+- app/services/credibility.py (new)
+- app/services/memory.py
+- app/services/editorial.py
+- app/services/scheduler_tasks.py
+- app/services/activity_logger.py
+- app/api/endpoints.py
+- app/schemas/schemas.py
+- docs/SUBMISSION_REPORT.md (new)
+
+
 
 
 

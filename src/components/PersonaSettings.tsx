@@ -135,7 +135,7 @@ export function PersonaSettings({ ctrl }: { ctrl: AppController }) {
                     borderRadius: 12,
                     textAlign: 'left',
                     background: active ? 'var(--accent-soft)' : 'var(--bg-inset)',
-                    border: active ? '1.5px solid var(--accent)' : '1px solid rgba(255,255,255,0.10)',
+                    border: active ? '1.5px solid var(--accent)' : '1px solid var(--border-default)',
                     boxShadow: active ? '0 0 16px -4px rgba(34,211,238,0.25)' : 'none',
                     transition: 'all 0.18s cubic-bezier(0.2, 0, 0, 1)',
                     cursor: 'pointer',
@@ -186,7 +186,7 @@ export function PersonaSettings({ ctrl }: { ctrl: AppController }) {
         </div>
 
         {/* Range Slider Container */}
-        <div style={{ padding: '16px 20px', background: 'var(--bg-inset)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)' }}>
+        <div style={{ padding: '16px 20px', background: 'var(--bg-inset)', borderRadius: 12, border: '1px solid var(--border-subtle)' }}>
           <input
             type="range"
             min={0}
@@ -237,7 +237,7 @@ export function PersonaSettings({ ctrl }: { ctrl: AppController }) {
           </span>
         </div>
 
-        <div style={{ padding: '16px 20px', background: 'var(--bg-inset)', borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)' }}>
+        <div style={{ padding: '16px 20px', background: 'var(--bg-inset)', borderRadius: 12, border: '1px solid var(--border-subtle)' }}>
           <input
             type="range"
             min={50}
@@ -286,14 +286,14 @@ export function PersonaSettings({ ctrl }: { ctrl: AppController }) {
                   gap: 12,
                   textAlign: 'left',
                   background: active ? 'var(--accent-soft)' : 'var(--bg-inset)',
-                  border: active ? '1.5px solid var(--accent)' : '1px solid rgba(255,255,255,0.10)',
+                  border: active ? '1.5px solid var(--accent)' : '1px solid var(--border-default)',
                   boxShadow: active ? '0 0 16px -4px rgba(34,211,238,0.25)' : 'none',
                   transition: 'all 0.18s cubic-bezier(0.2, 0, 0, 1)',
                   cursor: 'pointer',
                 }}
                 className="hover:border-accent hover:-translate-y-0.5"
               >
-                <div style={{ padding: 8, borderRadius: 8, background: active ? 'rgba(34,211,238,0.15)' : 'rgba(255,255,255,0.04)' }}>
+                <div style={{ padding: 8, borderRadius: 8, background: active ? 'var(--accent-soft)' : 'var(--bg-inset)' }}>
                   <Icon size={18} className={active ? 'text-accent' : 'text-muted'} />
                 </div>
                 <span style={{ fontSize: 14, fontWeight: active ? 700 : 500, color: active ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
