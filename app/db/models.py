@@ -14,6 +14,7 @@ class Agent(Base):
     name = Column(String, nullable=False, default="Navarachna")
     domain = Column(String, nullable=False)
     style = Column(String, nullable=False)
+    score_threshold = Column(Float, default=75.0)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     topics = relationship("Topic", back_populates="agent", cascade="all, delete-orphan")

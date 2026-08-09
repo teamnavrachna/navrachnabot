@@ -62,7 +62,8 @@ def initialize_agent(
     new_agent = Agent(
         name=persona.name or "Navarachna",
         domain=persona.domain,
-        style=persona.style or "Analyst"
+        style=persona.style or "Analyst",
+        score_threshold=persona.score_threshold or 75.0
     )
     db.add(new_agent)
     db.commit()

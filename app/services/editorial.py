@@ -48,7 +48,8 @@ class EditorialEngine:
         previous_post_titles: List[str],
         memory_similarity: float = 0.0,
         memory_linked_post_id: str = None,
-        diversity_penalty: float = 0.0
+        diversity_penalty: float = 0.0,
+        score_threshold: float = 75.0
     ) -> Dict[str, Any]:
         """
         Full editorial evaluation of a candidate topic.
@@ -126,7 +127,8 @@ is_approved, rejection_reason
                 # Enrich with derived fields
                 result = EditorialEngine._enrich_result(
                     result, source_credibility, memory_similarity,
-                    memory_linked_post_id, diversity_penalty, timeline
+                    memory_linked_post_id, diversity_penalty, timeline,
+                    score_threshold
                 )
                 return result
 
@@ -137,7 +139,7 @@ is_approved, rejection_reason
         return EditorialEngine._heuristic_evaluate(
             topic, domain, style, previous_post_titles,
             source_credibility, memory_similarity, memory_linked_post_id,
-            diversity_penalty, timeline
+            diversity_penalty, timeline, score_threshold
         )
 
     @staticmethod
@@ -147,7 +149,8 @@ is_approved, rejection_reason
         memory_similarity: float,
         memory_linked_post_id: str,
         diversity_penalty: float,
-        timeline: Dict[str, Any]
+        timeline: Dict[str, Any],
+        score_threshold: float = 75.0
     ) -> Dict[str, Any]:
         """Adds confidence, credibility, quality gates, and timeline to a scoring result."""
         total_score = result.get("total_score", 0.0)
@@ -174,10 +177,11 @@ is_approved, rejection_reason
         # Quality Gate evaluation
         quality_gate_failed = False
         gate_reason = result.get("rejection_reason") or ""
+        min_required_score = max(QUALITY_GATE_SCORE_MIN, float(score_threshold))
 
-        if total_score < QUALITY_GATE_SCORE_MIN:
+        if total_score < min_required_score:
             quality_gate_failed = True
-            gate_reason = gate_reason or f"Editorial score {total_score:.1f}/100 below threshold {QUALITY_GATE_SCORE_MIN}/100."
+            gate_reason = gate_reason or f"Editorial score {total_score:.1f}/100 below threshold {min_required_score:.1f}/100."
         if source_credibility < QUALITY_GATE_CREDIBILITY_MIN:
             quality_gate_failed = True
             gate_reason = f"Source credibility {source_credibility}/100 below minimum threshold. " + gate_reason
@@ -220,7 +224,8 @@ is_approved, rejection_reason
         memory_similarity: float,
         memory_linked_post_id: str,
         diversity_penalty: float,
-        timeline: Dict[str, Any]
+        timeline: Dict[str, Any],
+        score_threshold: float = 75.0
     ) -> Dict[str, Any]:
         """Heuristic scoring engine — runs when Gemini is unavailable."""
         title = topic.get("title", "").lower()
@@ -275,7 +280,7 @@ is_approved, rejection_reason
         )
 
         # Approval decision
-        threshold = float(QUALITY_GATE_SCORE_MIN)
+        threshold = max(float(QUALITY_GATE_SCORE_MIN), float(score_threshold))
         is_approved = (
             total_score >= threshold
             and not is_exact_duplicate

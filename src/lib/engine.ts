@@ -14,8 +14,7 @@ import type {
 } from '../types';
 import { TOPIC_POOL } from '../data/topics';
 
-const ACCEPT_THRESHOLD = 62;
-const SCAN_INTERVAL_MS = 45_000; // demo cadence
+export const SCAN_INTERVAL_MS = 30_000; // demo cadence
 
 function uid(prefix: string): string {
   return `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
@@ -52,14 +51,27 @@ export function discoverTopics(persona: Persona): RawTopic[] {
   return pick(pool, Math.min(12, pool.length)).sort((a, b) => b.publishedAt - a.publishedAt);
 }
 
+export function getAcceptThreshold(): number {
+  try {
+    const saved = localStorage.getItem('navarachna_signal_score_threshold');
+    return saved ? parseInt(saved, 10) : 75;
+  } catch {
+    return 75;
+  }
+}
+
 // ---------- Scoring ----------
 
 export function scoreTopic(topic: RawTopic, state: AppState): ScoredTopic {
   const { persona, memory, interestProfile } = state;
   if (!persona) throw new Error('no persona');
 
-  const relevance = topic.domain === persona.domain ? 92 : 55;
-  const interestMatch = Math.round(tagOverlap(topic.tags, persona.interests) * 100);
+  const threshold = getAcceptThreshold();
+
+  const domainRelevance = topic.domain === persona.domain ? 25 : 12;
+  const sigScore = Math.round((topic.significance / 100) * 30);
+  const novScore = Math.round((topic.novelty / 100) * 25);
+  const interestMatch = Math.round(tagOverlap(topic.tags, persona.interests) * 10);
   const memoryPenalty = memory.coveredTopicIds.includes(topic.id)
     ? -40
     : Object.entries(memory.coveredTagCounts)
@@ -67,37 +79,30 @@ export function scoreTopic(topic: RawTopic, state: AppState): ScoredTopic {
         .reduce((acc, [, c]) => acc - (c - 1) * 6, 0);
   const fbBoost = interestBoost(topic.tags, interestProfile);
   const ageHr = (Date.now() - topic.publishedAt) / 3600_000;
-  const recency = Math.max(0, 1 - ageHr / 72) * 12;
+  const recency = Math.round(Math.max(0, 1 - ageHr / 72) * 10);
 
-  const total = Math.round(
-    relevance * 0.2 +
-      topic.significance * 0.25 +
-      topic.novelty * 0.15 +
-      interestMatch * 0.18 +
-      recency +
-      memoryPenalty +
-      fbBoost,
-  );
+  const total = Math.max(0, Math.min(100, Math.round(
+    domainRelevance + sigScore + novScore + interestMatch + recency + memoryPenalty + fbBoost
+  )));
 
   const breakdown: ScoreBreakdown = {
-    relevance: Math.round(relevance * 0.2),
-    significance: Math.round(topic.significance * 0.25),
-    novelty: Math.round(topic.novelty * 0.15),
-    interestMatch: Math.round(interestMatch * 0.18),
-    memoryPenalty: Math.round(memoryPenalty + recency),
+    relevance: domainRelevance,
+    significance: sigScore,
+    novelty: novScore,
+    interestMatch,
+    memoryPenalty: memoryPenalty + recency,
     total,
   };
 
-  let accepted = total >= ACCEPT_THRESHOLD;
+  let accepted = total >= threshold;
   let rejectReason: string | null = null;
 
   if (!accepted) {
     if (memory.coveredTopicIds.includes(topic.id)) rejectReason = 'Already covered — duplicate detected by memory engine';
     else if (topic.significance < 40) rejectReason = 'Low significance — not impactful enough for the audience';
     else if (topic.novelty < 30) rejectReason = 'Stale news — already widely reported';
-    else if (relevance < 60) rejectReason = `Off-domain — not relevant to ${persona.domain}`;
-    else if (interestMatch < 35) rejectReason = 'Poor match with persona interests';
-    else rejectReason = 'Below editorial quality threshold';
+    else if (domainRelevance < 15) rejectReason = `Off-domain — not relevant to ${persona.domain}`;
+    else rejectReason = `Composite score (${total}/100) below active editorial threshold (${threshold}/100)`;
   }
 
   return { ...topic, score: total, scoreBreakdown: breakdown, accepted, rejectReason };

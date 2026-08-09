@@ -6,6 +6,7 @@ class PersonaSchema(BaseModel):
     name: str = Field(default="Navarachna", description="Agent persona name")
     domain: str = Field(description="Technology domain (e.g. Robotics, AI, Cybersecurity)")
     style: Optional[str] = Field(default="Analyst", description="Editorial style (e.g. Analyst, Futurist, Skeptic)")
+    score_threshold: Optional[float] = Field(default=75.0, description="Editorial score threshold (50-95)")
 
 
 class AgentInitRequest(BaseModel):

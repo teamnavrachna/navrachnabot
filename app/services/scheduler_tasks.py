@@ -185,6 +185,7 @@ def run_continuous_discovery_engine_for_agent(agent_id: str):
             )
 
             # ─── Editorial Evaluation ───
+            agent_threshold = getattr(agent, "score_threshold", 75.0) or 75.0
             eval_result = EditorialEngine.evaluate_topic(
                 topic=item,
                 domain=agent.domain,
@@ -192,7 +193,8 @@ def run_continuous_discovery_engine_for_agent(agent_id: str):
                 previous_post_titles=previous_titles,
                 memory_similarity=memory_sim,
                 memory_linked_post_id=memory_post_id,
-                diversity_penalty=diversity_penalty
+                diversity_penalty=diversity_penalty,
+                score_threshold=agent_threshold
             )
 
             timeline = eval_result.get("timeline", {})
