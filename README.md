@@ -1,9 +1,9 @@
-# NAVARACHNA
+# NAVRACHNA
 
 > **Autonomous Technology Intelligence Platform**  
 > *"Discover. Evaluate. Remember. Publish."*
 
-Navarachna is an **Autonomous Technology Intelligence Platform**. It is NOT a chatbot, AI influencer, or generic news summarizer. It is an autonomous intelligence agent that operates independently after a single initialization request—continuously discovering, scoring, remembering, and publishing domain-specific technology analysis over a multi-day timeline.
+Navrachna is an **Autonomous Technology Intelligence Platform**. It is NOT a chatbot, AI influencer, or generic news summarizer. It is an autonomous intelligence agent that operates independently after a single initialization request—continuously discovering, scoring, remembering, and publishing domain-specific technology analysis over a multi-day timeline.
 
 ---
 

@@ -33,17 +33,17 @@ export function PersonaSettings({ ctrl }: { ctrl: AppController }) {
   const { state, updatePersona } = ctrl;
   const persona = state.persona!;
 
-  const [name, setName] = useState(persona.name || 'Navarachna');
+  const [name, setName] = useState(persona.name || 'Navrachna');
   const [domain, setDomain] = useState<Domain>(persona.domain);
   const [style, setStyle] = useState<WritingStyle>(persona.writingStyle);
 
   const [scanInterval, setScanInterval] = useState<number>(() => {
-    const s = localStorage.getItem('navarachna_scan_interval_min');
+    const s = localStorage.getItem('navrachna_scan_interval_min');
     return s ? parseFloat(s) : 30;
   });
 
   const [signalScore, setSignalScore] = useState<number>(() => {
-    const s = localStorage.getItem('navarachna_signal_score_threshold');
+    const s = localStorage.getItem('navrachna_signal_score_threshold');
     return s ? parseInt(s) : 75;
   });
 
@@ -51,10 +51,10 @@ export function PersonaSettings({ ctrl }: { ctrl: AppController }) {
   const domainChanged = domain !== persona.domain;
 
   const save = () => {
-    localStorage.setItem('navarachna_scan_interval_min', String(scanInterval));
-    localStorage.setItem('navarachna_signal_score_threshold', String(signalScore));
+    localStorage.setItem('navrachna_scan_interval_min', String(scanInterval));
+    localStorage.setItem('navrachna_signal_score_threshold', String(signalScore));
 
-    window.dispatchEvent(new Event('navarachna_interval_changed'));
+    window.dispatchEvent(new Event('navrachna_interval_changed'));
     updatePersona({ ...persona, name: name.trim(), domain, writingStyle: style });
 
     setSaved(true);

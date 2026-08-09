@@ -2,11 +2,11 @@ import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "Navarachna - Autonomous Technology Intelligence Platform"
+    PROJECT_NAME: str = "Navrachna - Autonomous Technology Intelligence Platform"
     VERSION: str = "1.0.0"
     
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./navarachna.db")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./navrachna.db")
     CYCLE_INTERVAL_MINUTES: int = int(os.getenv("CYCLE_INTERVAL_MINUTES", "30"))
     PUBLISH_SCORE_THRESHOLD: float = float(os.getenv("PUBLISH_SCORE_THRESHOLD", "70.0"))
 

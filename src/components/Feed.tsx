@@ -52,7 +52,7 @@ export function Feed({ ctrl }: { ctrl: AppController }) {
   const fetchNextQueuedNews = async () => {
     setLoadingNext(true);
     try {
-      const agentId = localStorage.getItem('navarachna_agent_id');
+      const agentId = localStorage.getItem('navrachna_agent_id');
       if (agentId) {
         const res = await fetch(`/api/agent/publish-next?agentId=${agentId}`, { method: 'POST' });
         if (res.ok) {

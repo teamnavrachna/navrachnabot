@@ -23,7 +23,7 @@ class SocialPublisher:
         if obs_text.startswith("Observation:"):
             obs_text = obs_text[12:].strip()
 
-        tweet_body = f"🚀 [Navarachna Intelligence]\n\n{obs_text[:180]}...\n\nRead analysis: {source_url if source_url else 'https://navarachna.ai'}"
+        tweet_body = f"🚀 [Navrachna Intelligence]\n\n{obs_text[:180]}...\n\nRead analysis: {source_url if source_url else 'https://navrachna.ai'}"
 
         if bearer_token or api_key:
             try:
@@ -55,7 +55,7 @@ class SocialPublisher:
         linkedin_token = os.getenv("LINKEDIN_ACCESS_TOKEN", "")
         author_urn = os.getenv("LINKEDIN_AUTHOR_URN", "")
 
-        post_body = f"🌟 NAVARACHNA AUTONOMOUS INTELLIGENCE\n\n{text}\n\n💡 EDITORIAL RATIONALE:\n{rationale}\n\n🔗 Source: {source_url if source_url else 'https://navarachna.ai'}"
+        post_body = f"🌟 NAVRACHNA AUTONOMOUS INTELLIGENCE\n\n{text}\n\n💡 EDITORIAL RATIONALE:\n{rationale}\n\n🔗 Source: {source_url if source_url else 'https://navrachna.ai'}"
 
         if linkedin_token and author_urn:
             try:

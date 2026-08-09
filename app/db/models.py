@@ -11,7 +11,7 @@ class Agent(Base):
     __tablename__ = "agents"
 
     id = Column(String, primary_key=True, default=generate_uuid)
-    name = Column(String, nullable=False, default="Navarachna")
+    name = Column(String, nullable=False, default="Navrachna")
     domain = Column(String, nullable=False)
     style = Column(String, nullable=False)
     score_threshold = Column(Float, default=75.0)

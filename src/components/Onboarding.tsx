@@ -56,7 +56,7 @@ export function Onboarding({ onCreate }: { onCreate: (p: Persona) => void }) {
             <div style={{ width:36, height:36, borderRadius:10, background:'linear-gradient(135deg,#22D3EE 0%,#3B82F6 100%)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 16px -4px rgba(34,211,238,0.4)' }}>
               <Sparkles size={18} className="text-white" />
             </div>
-            <span style={{ fontFamily:'var(--font-mono)', fontSize:16, fontWeight:800, color:'white', letterSpacing:'0.1em' }}>NAVARACHNA</span>
+            <span style={{ fontFamily:'var(--font-mono)', fontSize:16, fontWeight:800, color:'white', letterSpacing:'0.1em' }}>NAVRACHNA</span>
           </div>
           <p style={{ fontSize:14, color:'var(--text-tertiary)', maxWidth:400, margin:'0 auto' }}>
             Autonomous Technology Intelligence Platform — configure your analyst to get started.

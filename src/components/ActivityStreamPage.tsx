@@ -16,14 +16,14 @@ export function ActivityStreamPage({ ctrl }: { ctrl: AppController }) {
   const [filter, setFilter] = useState<'ALL' | 'DISCOVERY' | 'ACCEPT' | 'REJECT' | 'PUBLISH'>('ALL');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const savedInterval = localStorage.getItem('navarachna_scan_interval_min');
+  const savedInterval = localStorage.getItem('navrachna_scan_interval_min');
   const intervalVal = savedInterval ? parseFloat(savedInterval) : 0.5;
   const intervalLabel = intervalVal < 1 ? `${Math.round(intervalVal * 60)}s` : `${intervalVal}m`;
 
   const fetchLogs = async () => {
     setIsRefreshing(true);
     try {
-      const agentId = localStorage.getItem('navarachna_agent_id');
+      const agentId = localStorage.getItem('navrachna_agent_id');
       let liveLogs: LogItem[] = [];
 
       if (agentId) {
@@ -152,7 +152,7 @@ export function ActivityStreamPage({ ctrl }: { ctrl: AppController }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <TerminalIcon size={16} className="text-accent" />
             <span className="t-caption text-accent font-bold" style={{ letterSpacing: '0.05em' }}>
-              &gt;_ STDOUT TERMINAL &bull; NAVARACHNA DAEMON TTY/0
+              &gt;_ STDOUT TERMINAL &bull; NAVRACHNA DAEMON TTY/0
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

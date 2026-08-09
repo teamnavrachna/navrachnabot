@@ -97,7 +97,7 @@ export function Sidebar({
               whiteSpace: 'nowrap',
             }}
           >
-            NAVARACHNA
+            NAVRACHNA
           </span>
         </button>
 

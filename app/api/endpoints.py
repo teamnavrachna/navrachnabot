@@ -60,7 +60,7 @@ def initialize_agent(
     """
     persona = payload.persona
     new_agent = Agent(
-        name=persona.name or "Navarachna",
+        name=persona.name or "Navrachna",
         domain=persona.domain,
         style=persona.style or "Analyst",
         score_threshold=persona.score_threshold or 75.0

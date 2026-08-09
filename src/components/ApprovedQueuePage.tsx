@@ -10,7 +10,7 @@ export function ApprovedQueuePage({ ctrl }: { ctrl: AppController }) {
   const fetchQueue = async () => {
     setLoading(true);
     try {
-      const agentId = localStorage.getItem('navarachna_agent_id');
+      const agentId = localStorage.getItem('navrachna_agent_id');
       if (agentId) {
         const res = await fetch(`/api/agent/queue?agentId=${agentId}`);
         if (res.ok) setQueueData(await res.json());

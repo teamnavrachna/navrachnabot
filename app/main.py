@@ -46,7 +46,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    description="Autonomous Technology Intelligence Platform - Navarachna",
+    description="Autonomous Technology Intelligence Platform - Navrachna",
     lifespan=lifespan
 )
 

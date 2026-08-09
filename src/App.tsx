@@ -26,11 +26,11 @@ export default function App() {
   const ctrl = useAppState();
   const { theme, toggle } = useTheme();
   const [page, setPageInternal] = useState<Page>(() => {
-    return (sessionStorage.getItem('navarachna_active_page') as Page) || 'dashboard';
+    return (sessionStorage.getItem('navrachna_active_page') as Page) || 'dashboard';
   });
 
   const setPage = (p: Page) => {
-    sessionStorage.setItem('navarachna_active_page', p);
+    sessionStorage.setItem('navrachna_active_page', p);
     setPageInternal(p);
   };
 

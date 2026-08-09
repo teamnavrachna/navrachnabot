@@ -30,7 +30,7 @@ export function useAppState() {
   const [now, setNow] = useState(Date.now());
   const scanLock = useRef(false);
   const getScanIntervalSeconds = () => {
-    const saved = localStorage.getItem('navarachna_scan_interval_min');
+    const saved = localStorage.getItem('navrachna_scan_interval_min');
     if (saved) {
       const min = parseFloat(saved);
       return Math.max(10, Math.round(min * 60));
@@ -46,10 +46,10 @@ export function useAppState() {
       const newInterval = getScanIntervalSeconds();
       setTimerSeconds(newInterval);
     };
-    window.addEventListener('navarachna_interval_changed', handleIntervalChange);
+    window.addEventListener('navrachna_interval_changed', handleIntervalChange);
     window.addEventListener('storage', handleIntervalChange);
     return () => {
-      window.removeEventListener('navarachna_interval_changed', handleIntervalChange);
+      window.removeEventListener('navrachna_interval_changed', handleIntervalChange);
       window.removeEventListener('storage', handleIntervalChange);
     };
   }, []);
@@ -94,7 +94,7 @@ export function useAppState() {
 
     const pollBackend = async () => {
       try {
-        const agentId = localStorage.getItem('navarachna_agent_id');
+        const agentId = localStorage.getItem('navrachna_agent_id');
         if (!agentId) return;
 
         // Fetch Live Queue from Backend if available

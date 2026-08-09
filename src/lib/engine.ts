@@ -53,7 +53,7 @@ export function discoverTopics(persona: Persona): RawTopic[] {
 
 export function getAcceptThreshold(): number {
   try {
-    const saved = localStorage.getItem('navarachna_signal_score_threshold');
+    const saved = localStorage.getItem('navrachna_signal_score_threshold');
     return saved ? parseInt(saved, 10) : 75;
   } catch {
     return 75;
