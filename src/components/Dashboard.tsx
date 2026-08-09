@@ -7,9 +7,9 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
   const persona = state.persona!;
   const latestPost = state.posts[0];
 
-  const totalFound = state.scans.reduce((a, s) => a + s.found, 0) || 48;
-  const totalRejected = state.scans.reduce((a, s) => a + s.rejected, 0) || 36;
-  const totalApproved = Math.max(0, totalFound - totalRejected);
+  const totalFound = state.scans.reduce((a, s) => a + s.found, 0);
+  const totalRejected = state.scans.reduce((a, s) => a + s.rejected, 0);
+  const totalApproved = (state.approvedQueue?.length || 0) + state.posts.length;
   const totalPublished = state.posts.length;
 
   const secondsLeft = Math.max(0, Math.ceil(nextScanIn / 1000));

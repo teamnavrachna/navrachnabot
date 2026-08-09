@@ -294,6 +294,80 @@ export function runScan(state: AppState): { result: ScanResult; post: Post | nul
   };
 }
 
+// ---------- Publish Next From Queue (Without Scanning Raw Feeds) ----------
+
+export function publishNextFromQueue(state: AppState): { post: Post | null; newState: AppState } {
+  if (!state.persona) throw new Error('no persona');
+
+  let currentQueue = state.approvedQueue || [];
+  
+  // Filter out any topics that were already published or covered
+  let validQueue = currentQueue.filter((item) => 
+    !state.memory.coveredTopicIds.includes(item.id) &&
+    !state.posts.some((p) => p.topicId === item.id || p.title.toLowerCase().trim() === item.title.toLowerCase().trim())
+  );
+
+  // If approvedQueue is empty, check if any fresh candidate topics pass threshold
+  if (validQueue.length === 0) {
+    const discovered = discoverTopics(state.persona);
+    const scored = discovered.map((tp) => scoreTopic(tp, state));
+    const newlyAccepted = scored.filter(
+      (s) => s.accepted && 
+      !state.memory.coveredTopicIds.includes(s.id) &&
+      !state.posts.some((p) => p.topicId === s.id || p.title.toLowerCase().trim() === s.title.toLowerCase().trim())
+    );
+
+    if (newlyAccepted.length === 0) {
+      // IF NO TOPICS PASS THRESHOLD OR ARE IN QUEUE -> DO ABSOLUTELY NOTHING!
+      return { post: null, newState: state };
+    }
+
+    validQueue = newlyAccepted.sort((a, b) => b.score - a.score);
+  }
+
+  // Pop top candidate from validQueue and publish to feed
+  const best = validQueue[0];
+  const remainingQueue = validQueue.slice(1);
+  
+  const { what, why, next, insight } = writeSection(best, state.persona);
+  const rationale = buildRationale(best, validQueue, state.persona);
+  
+  const post: Post = {
+    id: uid('post'),
+    topicId: best.id,
+    title: best.title,
+    domain: best.domain,
+    tags: best.tags,
+    whatHappened: what,
+    whyItMatters: why,
+    whatCouldHappenNext: next,
+    aiInsight: insight,
+    rationale,
+    sources: [best.source],
+    publishedAt: Date.now(),
+    feedback: null,
+  };
+
+  const tagCounts = { ...state.memory.coveredTagCounts };
+  for (const tg of best.tags) tagCounts[tg] = (tagCounts[tg] ?? 0) + 1;
+
+  const memory: Memory = {
+    ...state.memory,
+    coveredTopicIds: [...state.memory.coveredTopicIds, best.id],
+    coveredTagCounts: tagCounts,
+  };
+
+  return {
+    post,
+    newState: {
+      ...state,
+      posts: [post, ...state.posts],
+      approvedQueue: remainingQueue,
+      memory,
+    },
+  };
+}
+
 export const SCAN_INTERVAL = SCAN_INTERVAL_MS;
 
 // ---------- Feedback learning ----------
