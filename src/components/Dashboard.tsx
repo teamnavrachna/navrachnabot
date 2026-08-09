@@ -1,4 +1,4 @@
-import { Search, Filter, CheckCircle2, FileText, Terminal as TerminalIcon, Shield, Sparkles, Clock, RefreshCw } from 'lucide-react';
+import { Search, Filter, CheckCircle2, FileText, Terminal as TerminalIcon, Shield, Sparkles, Clock, RefreshCw, Zap } from 'lucide-react';
 import type { AppController } from '../hooks/useAppState';
 import { timeAgo } from '../lib/format';
 
@@ -7,7 +7,7 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
   const persona = state.persona!;
   const latestPost = state.posts[0];
 
-  const totalFound = state.scans.reduce((a, s) => a + s.found, 0);
+  const totalFound    = state.scans.reduce((a, s) => a + s.found, 0);
   const totalRejected = state.scans.reduce((a, s) => a + s.rejected, 0);
   const totalApproved = (state.approvedQueue?.length || 0) + state.posts.length;
   const totalPublished = state.posts.length;
@@ -20,8 +20,24 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
     return rem > 0 ? `${m}m ${rem}s` : `${m}m`;
   };
 
+  const savedInterval = localStorage.getItem('navrachna_scan_interval_min');
+  const intervalVal   = savedInterval ? parseFloat(savedInterval) : 0.5;
+  const intervalLabel = intervalVal < 1 ? `${Math.round(intervalVal * 60)}s` : `${intervalVal}m`;
+  const queueCount    = state.approvedQueue?.length || 0;
+  const memoryRecords = state.memory.coveredTopicIds.length;
+
+  // Live activity log derived from real state
+  const activityLines: { text: string; type: 'blue' | 'green' | 'yellow' | 'red' }[] = [];
+  if (totalFound > 0)    activityLines.push({ text: `${totalFound} candidate topics evaluated across all cycles`, type: 'blue' });
+  if (totalRejected > 0) activityLines.push({ text: `${totalRejected} topics rejected — below editorial threshold`, type: 'red' });
+  if (totalApproved > 0) activityLines.push({ text: `${totalApproved} topics approved (${queueCount} queued, ${totalPublished} published)`, type: 'green' });
+  if (latestPost)        activityLines.push({ text: `Published: "${latestPost.title.slice(0, 55)}${latestPost.title.length > 55 ? '…' : ''}"`, type: 'green' });
+  if (queueCount > 0)    activityLines.push({ text: `Next story queued — publishes in ${formatCountdown(secondsLeft)}`, type: 'yellow' });
+  if (queueCount === 0 && totalPublished > 0) activityLines.push({ text: 'Queue empty — standing by for next discovery cycle', type: 'yellow' });
+  if (activityLines.length === 0) activityLines.push({ text: 'Discovery engine initialised — first scan running…', type: 'blue' });
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }} className="animate-fade-in pb-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }} className="animate-fade-in pb-4">
 
       {/* ── Hero Card ── */}
       <div
@@ -29,179 +45,163 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
         style={{
           background: 'var(--bg-card)',
           borderColor: 'var(--accent-border)',
-          padding: 28,
+          padding: '24px 28px',
           position: 'relative',
           overflow: 'hidden',
         }}
       >
-        <div style={{ position: 'absolute', top: -60, right: -60, width: 280, height: 280, background: 'radial-gradient(circle, rgba(34,211,238,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        {/* decorative glow */}
+        <div style={{ position: 'absolute', top: -60, right: -60, width: 280, height: 280, background: 'radial-gradient(circle, rgba(34,211,238,0.07) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 20, flexWrap: 'wrap', position: 'relative' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
-                {persona.name.toUpperCase()}
-              </span>
-              <span className="badge badge-cyan">LIVE</span>
-            </div>
-            <p style={{ fontSize: 14, color: 'var(--text-secondary)', maxWidth: 480, lineHeight: 1.6 }}>
-              Autonomous Technology Intelligence Platform — continuously monitoring, evaluating, and broadcasting technology breakthroughs.
-            </p>
+        {/* Row 1: name + badge */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', position: 'relative', marginBottom: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.08em' }}>
+              {persona.name.toUpperCase()}
+            </span>
+            <span className="badge badge-cyan">LIVE</span>
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
+          {/* Publish Next — top-right corner */}
+          <button
+            onClick={() => ctrl.publishNext()}
+            disabled={scanning || queueCount === 0}
+            className="btn btn-primary"
+            style={{
+              padding: '9px 18px',
+              fontSize: 13,
+              fontWeight: 600,
+              borderRadius: 10,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 7,
+              opacity: queueCount === 0 ? 0.45 : 1,
+              cursor: queueCount === 0 ? 'not-allowed' : 'pointer',
+            }}
+          >
+            <Zap size={14} />
+            {scanning ? 'Publishing…' : queueCount === 0 ? 'Queue Empty' : `Publish Next (${queueCount})`}
+          </button>
+        </div>
+
+        {/* Row 2: description + meta badges */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', position: 'relative' }}>
+          <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', maxWidth: 460, lineHeight: 1.65, margin: 0 }}>
+            Autonomous Technology Intelligence Platform — continuously monitoring, evaluating, and broadcasting technology breakthroughs.
+          </p>
+
+          {/* Meta badges */}
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {[
-              { label: 'Domain', value: persona.domain, color: 'var(--accent)' },
-              { label: 'Style', value: persona.writingStyle, color: 'var(--highlight)' },
-              { label: 'Status', value: 'ACTIVE', color: '#22C55E' },
+              { label: 'Domain', value: persona.domain,       color: 'var(--accent)' },
+              { label: 'Style',  value: persona.writingStyle, color: 'var(--highlight)' },
+              { label: 'Status', value: 'ACTIVE',             color: '#22C55E' },
             ].map(({ label, value, color }) => (
-              <div key={label} className="card-inset" style={{ minWidth: 110 }}>
-                <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>{label}</div>
-                <div style={{ fontSize: 13, fontWeight: 600, color, fontFamily: label === 'Status' ? 'var(--font-mono)' : 'var(--font-sans)' }}>
+              <div key={label} className="card-inset" style={{ minWidth: 100, padding: '8px 12px' }}>
+                <div style={{ fontSize: 9.5, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>{label}</div>
+                <div style={{ fontSize: 12.5, fontWeight: 600, color, fontFamily: label === 'Status' ? 'var(--font-mono)' : 'var(--font-sans)', display: 'flex', alignItems: 'center', gap: 5 }}>
                   {label === 'Status' && (
-                    <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: color, marginRight: 6, boxShadow: `0 0 6px ${color}`, animation: 'pulse-soft 2s ease-in-out infinite' }} />
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: color, flexShrink: 0, boxShadow: `0 0 6px ${color}`, animation: 'pulse-soft 2s ease-in-out infinite' }} />
                   )}
                   {value}
                 </div>
               </div>
             ))}
-            <button
-              onClick={() => ctrl.publishNext()}
-              disabled={scanning}
-              className="btn btn-primary"
-              style={{ padding: '9px 16px', fontSize: 12, borderRadius: 10, display: 'inline-flex', alignItems: 'center', gap: 6, marginLeft: 6 }}
-            >
-              <RefreshCw size={13} className={scanning ? 'animate-spin' : ''} />
-              {scanning ? 'Publishing...' : 'Publish Next'}
-            </button>
           </div>
         </div>
       </div>
 
-      {/* ── KPI Grid: Responsive 2x2 on Mobile, 4-column on Desktop ── */}
+      {/* ── KPI Grid ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard title="Topics Scanned" value={totalFound} icon={Search} accent="#22D3EE" note="All cycles" />
-        <KpiCard title="Approved" value={totalApproved} icon={CheckCircle2} accent="#22C55E" note="Passed threshold" />
-        <KpiCard title="Rejected" value={totalRejected} icon={Filter} accent="#F59E0B" note="Below threshold" />
-        <KpiCard title="Published" value={totalPublished} icon={FileText} accent="#60A5FA" note="Broadcast live" />
+        <KpiCard title="Topics Scanned" value={totalFound}    icon={Search}       accent="#22D3EE" note="All cycles" />
+        <KpiCard title="Approved"       value={totalApproved} icon={CheckCircle2} accent="#22C55E" note={`${queueCount} in queue`} />
+        <KpiCard title="Rejected"       value={totalRejected} icon={Filter}       accent="#F59E0B" note="Below threshold" />
+        <KpiCard title="Published"      value={totalPublished} icon={FileText}    accent="#60A5FA" note="Broadcast live" />
       </div>
 
       {/* ── Discovery Countdown ── */}
-      <div
-        style={{
-          background: 'var(--bg-card)',
-          border: '1px solid var(--border-subtle)',
-          borderRadius: 16,
-          padding: '20px 24px',
-          boxShadow: 'var(--shadow-card)',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 16, padding: '18px 24px', boxShadow: 'var(--shadow-card)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Clock size={15} color="var(--accent)" />
+            <Clock size={14} color="var(--accent)" />
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-              Next Discovery Scan
+              {queueCount === 0 ? 'Next Discovery Scan' : 'Next Publish Cycle'}
             </span>
           </div>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 600, color: scanning ? '#F59E0B' : 'var(--text-primary)' }}>
-            {scanning ? '⚡ Scanning live feeds...' : `${formatCountdown(secondsLeft)} remaining`}
+            {scanning ? '⚡ Publishing now…' : queueCount === 0 ? 'Queue empty — standing by' : `${formatCountdown(secondsLeft)} remaining`}
           </span>
         </div>
-        {/* Progress Bar */}
-        <div
-          style={{
-            height: 6,
-            background: 'var(--bg-inset)',
-            borderRadius: 9999,
-            overflow: 'hidden',
-          }}
-        >
+        <div style={{ height: 5, background: 'var(--bg-inset)', borderRadius: 9999, overflow: 'hidden' }}>
           <div
             style={{
               height: '100%',
               width: `${Math.min(100, Math.max(2, scanProgress * 100))}%`,
               background: scanning
                 ? 'linear-gradient(90deg, #F59E0B, #EF4444)'
-                : 'linear-gradient(90deg, #22D3EE, #60A5FA)',
+                : queueCount === 0
+                  ? 'linear-gradient(90deg, #6B7280, #9CA3AF)'
+                  : 'linear-gradient(90deg, #22D3EE, #60A5FA)',
               borderRadius: 9999,
               transition: 'width 1s linear',
-              boxShadow: '0 0 8px rgba(34,211,238,0.4)',
+              boxShadow: queueCount > 0 ? '0 0 8px rgba(34,211,238,0.4)' : 'none',
             }}
           />
         </div>
       </div>
 
-      {/* ── Second Row: Status Panel + Activity Stream ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      {/* ── Second Row: Status (1/3) + Activity (2/3) ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 16, alignItems: 'stretch' }}>
 
         {/* Autonomy Status */}
         <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 16, padding: 24, boxShadow: 'var(--shadow-card)' }}>
           <SectionHead icon={Shield} title="Autonomy Status" accent="var(--accent)" />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 16 }}>
-            {(() => {
-              const savedInterval = localStorage.getItem('navarachna_scan_interval_min');
-              const intervalVal = savedInterval ? parseFloat(savedInterval) : 0.5;
-              const intervalLabel = intervalVal < 1 ? `${Math.round(intervalVal * 60)}s` : `${intervalVal}m`;
-              const queueCount = state.scans[0]?.scored?.filter((s: any) => s.accepted)?.length || 0;
-              const memoryRecords = (state.posts.length * 3) + totalFound + 12;
-
-              return [
-                { label: 'Activity', value: scanning ? `${persona.name} Scanning` : `${persona.name} Active`, color: 'var(--accent)' },
-                { label: 'Scheduler', value: `ACTIVE · ${intervalLabel}`, color: '#22C55E' },
-                { label: 'Last Scan', value: scanning ? 'In progress' : '< 1 min ago', color: 'var(--text-secondary)' },
-                { label: 'Queue Size', value: `${queueCount} queued`, color: 'var(--highlight)' },
-                { label: 'Memory', value: `${memoryRecords} Records`, color: 'var(--text-secondary)' },
-                { label: 'Health', value: '99.8%', color: '#22C55E' },
-              ].map(({ label, value, color }) => (
-                <div key={label} style={{ background: 'var(--bg-inset)', borderRadius: 10, padding: '10px 12px', border: '1px solid var(--border-subtle)' }}>
-                  <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 3 }}>{label}</div>
-                  <div style={{ fontSize: 12, fontWeight: 600, color, fontFamily: 'var(--font-mono)' }}>{value}</div>
-                </div>
-              ));
-            })()}
+            {[
+              { label: 'Activity',   value: scanning ? `${persona.name} Scanning` : `${persona.name} Active`, color: 'var(--accent)' },
+              { label: 'Scheduler',  value: `ACTIVE · ${intervalLabel}`,                                      color: '#22C55E' },
+              { label: 'Last Scan',  value: state.scans.length > 0 ? timeAgo(state.scans[0]?.completedAt || Date.now(), now) : 'Pending', color: 'var(--text-secondary)' },
+              { label: 'Queue Size', value: `${queueCount} queued`,                                            color: queueCount > 0 ? 'var(--highlight)' : 'var(--text-muted)' },
+              { label: 'Memory',     value: `${memoryRecords} Records`,                                        color: 'var(--text-secondary)' },
+              { label: 'Health',     value: '99.8%',                                                           color: '#22C55E' },
+            ].map(({ label, value, color }) => (
+              <div key={label} style={{ background: 'var(--bg-inset)', borderRadius: 10, padding: '10px 12px', border: '1px solid var(--border-subtle)' }}>
+                <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 3 }}>{label}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color, fontFamily: 'var(--font-mono)' }}>{value}</div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Activity Stream */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 16, padding: 24, boxShadow: 'var(--shadow-card)' }}>
+        {/* Activity Stream — 2/3 width */}
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 16, padding: 24, boxShadow: 'var(--shadow-card)', display: 'flex', flexDirection: 'column' }}>
           <SectionHead icon={TerminalIcon} title="Live Activity Stream" accent="var(--accent)" />
           <div
             style={{
-              marginTop: 16,
+              marginTop: 14,
+              flex: 1,
               background: 'var(--bg-inset)',
               border: '1px solid var(--border-subtle)',
               borderRadius: 10,
-              padding: 14,
+              padding: '12px 14px',
               fontFamily: 'var(--font-mono)',
               fontSize: 12,
-              maxHeight: 220,
               overflowY: 'auto',
               display: 'flex',
               flexDirection: 'column',
               gap: 8,
             }}
           >
-            <TermLine time="22:15:03" text="Discovery Cycle Started (30s interval)" type="blue" />
-            <TermLine time="22:15:08" text={`${totalFound} candidate topics found via arXiv & RSS`} type="blue" />
-            <TermLine time="22:15:10" text={`${totalRejected} topics rejected — below editorial threshold`} type="red" />
-            <TermLine time="22:15:12" text={`${totalApproved} approved topics added to queue`} type="green" />
-            <TermLine time="22:15:15" text="Publishing deferred — priority evaluation pending" type="yellow" />
-            {latestPost && <TermLine time="22:18:44" text={`Published: "${latestPost.title.slice(0, 50)}..."`} type="green" />}
+            {activityLines.map((line, i) => (
+              <TermLine key={i} text={line.text} type={line.type} />
+            ))}
           </div>
         </div>
       </div>
 
       {/* ── Latest Published Intelligence ── */}
-      <div
-        style={{
-          background: 'var(--bg-card)',
-          border: '1px solid var(--accent-border)',
-          borderRadius: 16,
-          padding: 28,
-          boxShadow: 'var(--shadow-card)',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid var(--border-subtle)', flexWrap: 'wrap', gap: 10 }}>
+      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--accent-border)', borderRadius: 16, padding: 28, boxShadow: 'var(--shadow-card)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, paddingBottom: 14, borderBottom: '1px solid var(--border-subtle)', flexWrap: 'wrap', gap: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Sparkles size={16} color="var(--accent)" />
             <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>Latest Published Intelligence</span>
@@ -216,25 +216,25 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
 
         {latestPost ? (
           <div>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.3, marginBottom: 20, letterSpacing: '-0.02em' }}>
+            <h2 style={{ fontSize: 19, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.35, marginBottom: 20, letterSpacing: '-0.02em' }}>
               {latestPost.title}
             </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }} className="grid-cols-1 md:grid-cols-3">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }} className="grid-cols-1 md:grid-cols-3">
               {[
-                { label: 'Executive Summary', color: 'var(--accent)', text: latestPost.whatHappened },
-                { label: 'Why It Matters', color: 'var(--highlight)', text: latestPost.whyItMatters },
-                { label: 'Key Takeaway', color: '#22C55E', text: latestPost.whatCouldHappenNext },
+                { label: 'Executive Summary', color: 'var(--accent)',     text: latestPost.whatHappened },
+                { label: 'Why It Matters',    color: 'var(--highlight)', text: latestPost.whyItMatters },
+                { label: 'Key Takeaway',      color: '#22C55E',          text: latestPost.whatCouldHappenNext },
               ].map(({ label, color, text }) => (
                 <div key={label} style={{ background: 'var(--bg-inset)', borderRadius: 12, padding: 16, border: '1px solid var(--border-subtle)' }}>
                   <div style={{ fontSize: 10, fontFamily: 'var(--font-mono)', fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>{label}</div>
-                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65 }} className="line-clamp-4">{text}</p>
+                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0 }} className="line-clamp-4">{text}</p>
                 </div>
               ))}
             </div>
           </div>
         ) : (
           <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
-            No publications yet. Discovery engine running autonomously...
+            No publications yet — discovery engine running autonomously…
           </div>
         )}
       </div>
@@ -246,20 +246,11 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
 function KpiCard({ title, value, icon: Icon, accent, note }: { title: string; value: number; icon: typeof Search; accent: string; note: string }) {
   return (
     <div
-      style={{
-        background: 'var(--bg-card)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: 16,
-        padding: 24,
-        boxShadow: 'var(--shadow-card)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 12,
-      }}
+      style={{ background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: 16, padding: 24, boxShadow: 'var(--shadow-card)', display: 'flex', flexDirection: 'column', gap: 12 }}
       className="card-hover"
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>{title}</span>
+        <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-tertiary)' }}>{title}</span>
         <div style={{ padding: 7, borderRadius: 9, background: 'var(--bg-inset)', border: '1px solid var(--border-subtle)' }}>
           <Icon size={14} color={accent} />
         </div>
@@ -281,12 +272,13 @@ function SectionHead({ icon: Icon, title, accent }: { icon: typeof Shield; title
   );
 }
 
-function TermLine({ time, text, type }: { time: string; text: string; type: 'blue' | 'green' | 'yellow' | 'red' }) {
+function TermLine({ text, type }: { text: string; type: 'blue' | 'green' | 'yellow' | 'red' }) {
   const colors: Record<string, string> = { blue: 'var(--accent)', green: '#22C55E', yellow: '#F59E0B', red: '#EF4444' };
+  const prefix: Record<string, string> = { blue: '›', green: '✓', yellow: '⚠', red: '✗' };
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-      <span style={{ color: 'var(--text-muted)', flexShrink: 0, fontSize: 11 }}>{time}</span>
-      <span style={{ color: colors[type], fontSize: 11, lineHeight: 1.5 }}>{text}</span>
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+      <span style={{ color: colors[type], flexShrink: 0, fontSize: 11, lineHeight: 1.6 }}>{prefix[type]}</span>
+      <span style={{ color: colors[type], fontSize: 11, lineHeight: 1.6 }}>{text}</span>
     </div>
   );
 }
