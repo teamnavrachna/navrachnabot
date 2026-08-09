@@ -88,9 +88,10 @@ export function useAppState() {
   }, []);
 
   // ── Main autonomous timer ──
-  // Every second we count down. When timer hits 0:
-  //   • Dequeue one post from approvedQueue → publish to feed
-  //   • If queue is empty → do NOTHING (no scan, no fake posts)
+  // Every N seconds:
+  //   • Run a full discovery scan → updates Topics Scanned / Approved / Rejected counters
+  //   • runScan already publishes the top candidate and puts the rest in approvedQueue
+  //   • If queue was empty AND no candidates pass threshold → runScan still runs but produces no post
   useEffect(() => {
     const interval = setInterval(() => {
       setTimerSeconds((prev) => {
@@ -98,28 +99,12 @@ export function useAppState() {
         const next = prev <= 1 ? max : prev - 1;
 
         if (prev <= 1 && !scanLock.current) {
-          // Guard with the ref so we never have stale closure issues
           const current = stateRef.current;
           if (!current.persona) return max;
 
-          const queue = current.approvedQueue || [];
-          const validQueue = queue.filter(
-            (item) =>
-              !current.memory.coveredTopicIds.includes(item.id) &&
-              !current.posts.some(
-                (p) => p.topicId === item.id ||
-                  p.title.toLowerCase().trim() === item.title.toLowerCase().trim()
-              )
-          );
-
-          if (validQueue.length === 0) {
-            // Queue empty → do absolutely nothing
-            return max;
-          }
-
-          // Queue has items → publish top one
           scanLock.current = true;
-          const { newState } = publishNextFromQueue(current);
+          // Always run a real scan on the timer tick — this updates all counters
+          const { newState } = runScan(current);
           stateRef.current = newState;
           setState(newState);
           scanLock.current = false;
@@ -130,7 +115,7 @@ export function useAppState() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []); // ← empty deps: only runs once, reads live data via stateRef
+  }, []); // ← empty deps: reads live data via stateRef
 
   // ── On persona load: if feed is empty, run ONE initial scan to populate queue ──
   const initializedRef = useRef(false);
