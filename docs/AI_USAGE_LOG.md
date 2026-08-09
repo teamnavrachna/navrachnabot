@@ -1,4 +1,4 @@
-# AI Usage Log — Navarachna
+# AI Usage Log — Navrachna
 
 > **Document Purpose:** Transparent audit of AI-assisted engineering tasks, prompt intents, output summaries, modified files, and technical implementation decisions across development milestones.
 
