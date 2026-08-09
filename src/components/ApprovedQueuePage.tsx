@@ -83,15 +83,26 @@ export function ApprovedQueuePage({ ctrl }: { ctrl: AppController }) {
           </p>
         </div>
 
-        <button
-          onClick={fetchQueue}
-          disabled={loading}
-          className="btn btn-primary"
-          style={{ padding: '9px 18px', fontSize: 13, borderRadius: 10, display: 'inline-flex', alignItems: 'center', gap: 8 }}
-        >
-          <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-          Refresh Pipeline Status
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button
+            onClick={() => ctrl.publishNext()}
+            disabled={ctrl.scanning}
+            className="btn btn-primary"
+            style={{ padding: '9px 18px', fontSize: 13, borderRadius: 10, display: 'inline-flex', alignItems: 'center', gap: 8 }}
+          >
+            <RefreshCw size={14} className={ctrl.scanning ? 'animate-spin' : ''} />
+            {ctrl.scanning ? 'Publishing Next...' : 'Publish Next Queued Story'}
+          </button>
+          <button
+            onClick={fetchQueue}
+            disabled={loading}
+            className="btn btn-secondary"
+            style={{ padding: '9px 18px', fontSize: 13, borderRadius: 10, display: 'inline-flex', alignItems: 'center', gap: 8 }}
+          >
+            <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Metrics Row */}

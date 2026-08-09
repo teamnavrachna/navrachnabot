@@ -1,4 +1,4 @@
-import { Search, Filter, CheckCircle2, FileText, Terminal as TerminalIcon, Shield, Sparkles, Clock } from 'lucide-react';
+import { Search, Filter, CheckCircle2, FileText, Terminal as TerminalIcon, Shield, Sparkles, Clock, RefreshCw } from 'lucide-react';
 import type { AppController } from '../hooks/useAppState';
 import { timeAgo } from '../lib/format';
 
@@ -49,7 +49,7 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
             </p>
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
             {[
               { label: 'Domain', value: persona.domain, color: 'var(--accent)' },
               { label: 'Style', value: persona.writingStyle, color: 'var(--highlight)' },
@@ -65,6 +65,15 @@ export function Dashboard({ ctrl }: { ctrl: AppController }) {
                 </div>
               </div>
             ))}
+            <button
+              onClick={() => ctrl.publishNext()}
+              disabled={scanning}
+              className="btn btn-primary"
+              style={{ padding: '9px 16px', fontSize: 12, borderRadius: 10, display: 'inline-flex', alignItems: 'center', gap: 6, marginLeft: 6 }}
+            >
+              <RefreshCw size={13} className={scanning ? 'animate-spin' : ''} />
+              {scanning ? 'Publishing...' : 'Publish Next'}
+            </button>
           </div>
         </div>
       </div>

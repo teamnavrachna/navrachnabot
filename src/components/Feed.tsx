@@ -106,13 +106,16 @@ export function Feed({ ctrl }: { ctrl: AppController }) {
         </div>
 
         <button
-          onClick={fetchNextQueuedNews}
-          disabled={loadingNext}
+          onClick={() => {
+            fetchNextQueuedNews();
+            ctrl.publishNext();
+          }}
+          disabled={loadingNext || ctrl.scanning}
           className="btn btn-primary"
-          style={{ padding: '9px 18px', fontSize: 13, borderRadius: 10 }}
+          style={{ padding: '9px 18px', fontSize: 13, borderRadius: 10, display: 'flex', alignItems: 'center', gap: 8 }}
         >
-          <RefreshCw size={14} className={loadingNext ? 'animate-spin' : ''} />
-          {loadingNext ? 'Publishing Next...' : 'Advance Feed Queue'}
+          <RefreshCw size={14} className={loadingNext || ctrl.scanning ? 'animate-spin' : ''} />
+          {loadingNext || ctrl.scanning ? 'Publishing Next...' : 'Publish Next Queued Story'}
         </button>
       </div>
 

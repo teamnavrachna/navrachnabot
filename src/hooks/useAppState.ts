@@ -10,7 +10,14 @@ function load(): AppState {
     if (!raw) return initialState();
     const parsed = JSON.parse(raw) as AppState;
     if (!parsed.memory) return initialState();
-    return { ...initialState(), ...parsed };
+    return {
+      ...initialState(),
+      ...parsed,
+      approvedQueue: Array.isArray(parsed.approvedQueue) ? parsed.approvedQueue : [],
+      posts: Array.isArray(parsed.posts) ? parsed.posts : [],
+      scans: Array.isArray(parsed.scans) ? parsed.scans : [],
+      bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
+    };
   } catch {
     return initialState();
   }
@@ -124,18 +131,15 @@ export function useAppState() {
               rejectReason: null
             }));
 
-            const mockScan: ScanResult = {
-              id: 'live-scan',
-              startedAt: Date.now() - 30000,
-              completedAt: Date.now(),
-              found: queuedTopics.length,
-              rejected: 0,
-              selectedTopicId: queuedTopics[0]?.id || null,
-              scored: queuedTopics,
-              resultingPostId: 'latest-post'
-            };
-
-            setState((s) => ({ ...s, scans: [mockScan] }));
+            setState((s) => {
+              const existingIds = new Set((s.approvedQueue || []).map((item) => item.id));
+              const newItems = queuedTopics.filter((item) => !existingIds.has(item.id) && !s.memory.coveredTopicIds.includes(item.id));
+              if (newItems.length === 0) return s;
+              return {
+                ...s,
+                approvedQueue: [...(s.approvedQueue || []), ...newItems].sort((a, b) => b.score - a.score)
+              };
+            });
           }
         }
       } catch (e) {
@@ -155,8 +159,21 @@ export function useAppState() {
     setScanning(true);
     const { newState } = runScan(state);
     setState(newState);
+    save(newState);
     setScanning(false);
     scanLock.current = false;
+  }, [state]);
+
+  const publishNext = useCallback(() => {
+    if (!scanLock.current && state.persona) {
+      scanLock.current = true;
+      setScanning(true);
+      const { newState } = runScan(state);
+      setState(newState);
+      save(newState);
+      setScanning(false);
+      scanLock.current = false;
+    }
   }, [state]);
 
   const createPersona = useCallback((persona: Persona) => {
@@ -169,6 +186,7 @@ export function useAppState() {
       persona,
       posts: [],
       scans: [],
+      approvedQueue: [],
       nextScanAt: Date.now() + 30000,
     };
     setState(fresh);
@@ -176,7 +194,7 @@ export function useAppState() {
   }, []);
 
   const updatePersona = useCallback((persona: Persona) => {
-    setState((s) => ({ ...s, persona, posts: [], scans: [] }));
+    setState((s) => ({ ...s, persona, posts: [], scans: [], approvedQueue: [] }));
   }, []);
 
   const giveFeedback = useCallback((postId: string, feedback: 'liked' | 'disliked' | 'more') => {
@@ -184,19 +202,21 @@ export function useAppState() {
   }, []);
 
   const toggleBookmark = useCallback((postId: string) => {
-    setState((s) => ({
-      ...s,
-      bookmarks: s.bookmarks.includes(postId)
-        ? s.bookmarks.filter((id) => id !== postId)
-        : [...s.bookmarks, postId],
-    }));
+    setState((s) => {
+      const exists = s.bookmarks.includes(postId);
+      return {
+        ...s,
+        bookmarks: exists ? s.bookmarks.filter((id) => id !== postId) : [...s.bookmarks, postId],
+      };
+    });
   }, []);
 
   const buildDigest = useCallback(() => {
-    setState((s) => {
-      const digest = generateDigest(s);
-      return { ...s, digest, lastDigestAt: Date.now() };
-    });
+    setState((s) => ({
+      ...s,
+      digest: generateDigest(s),
+      lastDigestAt: Date.now(),
+    }));
   }, []);
 
   const triggerScanNow = useCallback(() => {
@@ -205,6 +225,7 @@ export function useAppState() {
       setScanning(true);
       const { newState } = runScan(state);
       setState(newState);
+      save(newState);
       setScanning(false);
       scanLock.current = false;
     }
@@ -235,6 +256,7 @@ export function useAppState() {
     toggleBookmark,
     buildDigest,
     triggerScanNow,
+    publishNext,
     resetAll,
   };
 }

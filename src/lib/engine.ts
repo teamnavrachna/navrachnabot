@@ -50,29 +50,37 @@ const DYNAMIC_TOPIC_TEMPLATES: Record<Domain, Array<{ title: string; source: Sou
     { title: 'Mechanistic Interpretability Detects Hidden Backdoors Prior to Model Deployment', source: { name: 'Anthropic', url: 'https://anthropic.com/interpretability-2025' }, tags: ['Model Safety', 'Enterprise AI'], significance: 91, novelty: 88 },
     { title: 'Formal Verification Framework Certifies Safety Boundaries for Autonomous Systems', source: { name: 'MIT Tech Review', url: 'https://technologyreview.com/formal-verification' }, tags: ['Model Safety', 'AI Agents'], significance: 89, novelty: 86 },
     { title: 'Adversarial Robustness Benchmark Exposes Vulnerabilities in Multimodal RAG', source: { name: 'Papers With Code', url: 'https://paperswithcode.com/paper/multimodal-rag-defense' }, tags: ['Model Safety', 'Multimodal Models'], significance: 88, novelty: 84 },
+    { title: 'Differential Privacy Guarantees Certified for Federated Learning Fine-Tuning', source: { name: 'arXiv', url: 'https://arxiv.org/abs/2503.12' }, tags: ['Model Safety', 'AI Research'], significance: 90, novelty: 87 },
+    { title: 'Runtime Prompt Injection Detector Mitigates Indirect Jailbreak Attacks', source: { name: 'Hugging Face', url: 'https://huggingface.co/blog/prompt-jailbreak-detector' }, tags: ['Model Safety', 'LLMs'], significance: 92, novelty: 89 },
   ],
   'Machine Learning': [
     { title: 'Test-Time Compute Scaling Beats Larger Models on Complex Mathematical Reasoning', source: { name: 'OpenAI', url: 'https://openai.com/blog/test-time-compute' }, tags: ['LLMs', 'Reinforcement Learning'], significance: 96, novelty: 95 },
     { title: 'Sub-Byte Quantization Achieves 4-Bit Fidelity at 1.5-Bit Memory Footprint', source: { name: 'Hugging Face', url: 'https://huggingface.co/blog/sub-byte-quant' }, tags: ['LLMs', 'AI Hardware', 'Edge AI'], significance: 93, novelty: 92 },
     { title: 'Direct Preference Optimization Over Long Context Windows Replaces Traditional RLHF', source: { name: 'arXiv', url: 'https://arxiv.org/abs/2503.04' }, tags: ['LLMs', 'Reinforcement Learning'], significance: 90, novelty: 89 },
     { title: 'Linear-Time State Space Architectures Outperform Transformers on 100M-Token Sequences', source: { name: 'DeepMind', url: 'https://deepmind.google/state-space-models' }, tags: ['LLMs', 'AI Research'], significance: 94, novelty: 93 },
+    { title: 'Sparse Mixture of Experts Scaling Law Reduces Inference Memory by 60%', source: { name: 'arXiv', url: 'https://arxiv.org/abs/2503.18' }, tags: ['LLMs', 'AI Hardware'], significance: 91, novelty: 88 },
+    { title: 'Unified Multimodal Tokenization Enables Synchronous Vision-Audio Generation', source: { name: 'DeepMind', url: 'https://deepmind.google/multimodal-tokenization' }, tags: ['Multimodal Models', 'Generative AI'], significance: 95, novelty: 91 },
   ],
   'Robotics': [
     { title: 'Unified Spatial Vision-Language-Action Policy Executes 500 Complex Household Tasks', source: { name: 'DeepMind', url: 'https://deepmind.google/vla-v2' }, tags: ['Robot Learning', 'AI Agents', 'Multimodal Models'], significance: 95, novelty: 94 },
     { title: 'Sim-to-Real RL Policy Achieves Millimeter-Precision Manipulation Without Fine-Tuning', source: { name: 'Papers With Code', url: 'https://paperswithcode.com/paper/sim2real-precision' }, tags: ['Robot Learning', 'Reinforcement Learning'], significance: 92, novelty: 89 },
     { title: 'Autonomous Humanoid Fleet Deployed in Commercial Warehouse Assembly Line', source: { name: 'MIT Tech Review', url: 'https://technologyreview.com/humanoid-deployment' }, tags: ['Robot Learning', 'AI Hardware'], significance: 91, novelty: 87 },
+    { title: 'Tactile Feedback Neural Controller Enables Fragile Object Dexterous Grasping', source: { name: 'arXiv', url: 'https://arxiv.org/abs/2503.22' }, tags: ['Robot Learning', 'AI Hardware'], significance: 89, novelty: 86 },
   ],
   'AI Products': [
     { title: 'Autonomous Multi-Agent Engineering Environment Passes Complex Full-Stack Benchmarks', source: { name: 'Hugging Face', url: 'https://huggingface.co/blog/agent-coder-2025' }, tags: ['AI Agents', 'AI Coding Tools', 'Enterprise AI'], significance: 95, novelty: 92 },
     { title: 'Local Edge-AI Copilot Delivers Instant Zero-Latency Code Completion', source: { name: 'AI Index Report', url: 'https://aiindex.stanford.edu/edge-copilot' }, tags: ['AI Coding Tools', 'Edge AI', 'LLMs'], significance: 90, novelty: 88 },
+    { title: 'Enterprise RAG Platform Integrates Dynamic Graph Memory for Complex Document Search', source: { name: 'Enterprise AI', url: 'https://huggingface.co/blog/graph-rag' }, tags: ['Enterprise AI', 'LLMs'], significance: 91, novelty: 87 },
   ],
   'AI Research': [
     { title: 'Emergent Reasoning Dynamics in Recursive Self-Correction Networks Revealed', source: { name: 'arXiv', url: 'https://arxiv.org/abs/2503.09' }, tags: ['LLMs', 'AI Research', 'Reinforcement Learning'], significance: 97, novelty: 96 },
     { title: 'Generative Physics Engine Predicts Complex Fluid and Particle Dynamics in Real-Time', source: { name: 'DeepMind', url: 'https://deepmind.google/physics-engine' }, tags: ['Generative AI', 'Multimodal Models'], significance: 94, novelty: 92 },
+    { title: 'Self-Organizing Hypergraph Neural Networks Discover Unseen Molecular Reactions', source: { name: 'arXiv', url: 'https://arxiv.org/abs/2503.31' }, tags: ['AI Research', 'Machine Learning'], significance: 93, novelty: 90 },
   ],
   'AI Ethics & Policy': [
     { title: 'Global AI Safety Institute Establishes Standardized Red-Teaming Audits for Frontier Models', source: { name: 'AI Index Report', url: 'https://aiindex.stanford.edu/red-teaming-standard' }, tags: ['AI Regulation', 'Model Safety', 'Enterprise AI'], significance: 93, novelty: 90 },
     { title: 'Open Source Model Licensing Framework Adopted by Major Tech Consortium', source: { name: 'MIT Tech Review', url: 'https://technologyreview.com/open-licensing' }, tags: ['AI Regulation', 'Open Source AI'], significance: 89, novelty: 87 },
+    { title: 'Watermarking Provenance Protocol Certified for Synthetically Generated Audio and Video', source: { name: 'AI Index Report', url: 'https://aiindex.stanford.edu/watermark-protocol' }, tags: ['AI Regulation', 'Model Safety'], significance: 91, novelty: 88 },
   ],
 };
 
@@ -86,7 +94,7 @@ export function discoverTopics(persona: Persona): RawTopic[] {
   // Generate continuous synthetic candidate topics if domain pool is small
   const templates = DYNAMIC_TOPIC_TEMPLATES[persona.domain] || DYNAMIC_TOPIC_TEMPLATES['Machine Learning'];
   const dynamicTopics: RawTopic[] = templates.map((tmpl, idx) => ({
-    id: `dyn-${persona.domain.toLowerCase().replace(/[^a-z]/g, '')}-${idx}-${now % 10000}`,
+    id: `dyn-${persona.domain.toLowerCase().replace(/[^a-z]/g, '')}-${idx}`,
     title: tmpl.title,
     source: tmpl.source,
     domain: persona.domain,
@@ -121,11 +129,16 @@ export function scoreTopic(topic: RawTopic, state: AppState): ScoredTopic {
   const sigScore = Math.round((topic.significance / 100) * 30);
   const novScore = Math.round((topic.novelty / 100) * 25);
   const interestMatch = Math.round(tagOverlap(topic.tags, persona.interests) * 10);
-  const memoryPenalty = memory.coveredTopicIds.includes(topic.id)
-    ? -40
+
+  const isAlreadyCovered = memory.coveredTopicIds.includes(topic.id) ||
+    state.posts.some((p) => p.topicId === topic.id || p.title.toLowerCase().trim() === topic.title.toLowerCase().trim());
+
+  const memoryPenalty = isAlreadyCovered
+    ? -50
     : Object.entries(memory.coveredTagCounts)
         .filter(([tag, c]) => topic.tags.includes(tag) && c >= 2)
         .reduce((acc, [, c]) => acc - (c - 1) * 6, 0);
+
   const fbBoost = interestBoost(topic.tags, interestProfile);
   const ageHr = (Date.now() - topic.publishedAt) / 3600_000;
   const recency = Math.round(Math.max(0, 1 - ageHr / 72) * 10);
@@ -143,11 +156,11 @@ export function scoreTopic(topic: RawTopic, state: AppState): ScoredTopic {
     total,
   };
 
-  let accepted = total >= threshold;
+  let accepted = total >= threshold && !isAlreadyCovered;
   let rejectReason: string | null = null;
 
   if (!accepted) {
-    if (memory.coveredTopicIds.includes(topic.id)) rejectReason = 'Already covered — duplicate detected by memory engine';
+    if (isAlreadyCovered) rejectReason = 'Already covered — duplicate detected by memory engine';
     else if (topic.significance < 40) rejectReason = 'Low significance — not impactful enough for the audience';
     else if (topic.novelty < 30) rejectReason = 'Stale news — already widely reported';
     else if (domainRelevance < 15) rejectReason = `Off-domain — not relevant to ${persona.domain}`;
